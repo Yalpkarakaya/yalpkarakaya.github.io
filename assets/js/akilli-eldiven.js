@@ -20,7 +20,7 @@
     const database = getDatabase(app);
     const auth = getAuth(app); // Auth servisine referans oluştur
     // Yönetici hesabınızın e-posta adresini buraya yazın
-    const ADMIN_EMAILS = ["yalp@admin.com", "ezgi@admin.com", "kerem@admin.com"];
+    const ADMIN_EMAILS = ["yalp@admin.com", "ezgi@admin.com", "kectny@admin.com"];
 
     // --- API ANAHTARLARI VE YARDIMCI FONKSİYONLAR ---
     const apiKeys = [
