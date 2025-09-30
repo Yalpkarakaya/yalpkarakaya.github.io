@@ -1,3 +1,4 @@
+
         /* CSS Variables */
         :root {
             --slate-900: #0f172a;
@@ -370,6 +371,9 @@
         }
 
         /* Interactive Map */
+        .map-container {
+           
+        }
 
         .interactive-map-svg {
             height: auto;
