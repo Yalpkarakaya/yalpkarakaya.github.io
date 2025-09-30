@@ -1241,6 +1241,7 @@ switch (gelen_karakter) {
             hintInput.value = hint;
             wrapper.querySelector('.ai-hint-panel').style.display = 'none';
         } else if (quantityBtn) {
+        e.stopPropagation();
         const action = quantityBtn.dataset.action;
         if (action === 'increase') {
             componentList[index].quantity++;
