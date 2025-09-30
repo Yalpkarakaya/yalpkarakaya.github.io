@@ -177,6 +177,7 @@
             border: 1px solid var(--slate-700);
             padding: 1.5rem;
             padding-top: 0.5rem;
+            width: 100%;
         }
 
         /* Section Titles */
@@ -327,6 +328,24 @@
         }
 
         /* AI Modal */
+
+        #ai-modal-overlay #ai-inspector-wrapper {
+            max-width: 70%;
+            width: 70%;
+            max-height: 80vh;
+            display: flex;
+        }
+
+        #ai-modal-overlay .inspector-container {
+            max-height: 80vh;
+            min-height: 520px;
+        }
+
+        #ai-modal-overlay #chat-log {
+            min-height: 300px;
+            max-height: 80vh;
+        }
+
         #ai-modal-overlay {
             position: fixed;
             top: 0;
@@ -351,12 +370,10 @@
         }
 
         /* Interactive Map */
-        .map-container {
-            overflow-x: auto;
-        }
 
         .interactive-map-svg {
             height: auto;
+            width : 100%;
         }
 
         .interactive-map-svg .block {
@@ -398,8 +415,12 @@
             transition: all 0.2s ease;
         }
 
-        .net-node:hover {
-            filter: drop-shadow(0 0 8px var(--amber-400));
+        @media (hover: hover) {
+            .net-node:hover,
+            li.net-node:hover,
+            g.net-node:hover {
+                filter: drop-shadow(0 0 8px var(--amber-400));
+            }
         }
 
         .net-node.highlight .net-wire {
@@ -682,6 +703,7 @@
             color: var(--sky-400);
         }
 
+
         /* AI Hint Panel */
         .ai-hint-panel {
             display: none;
@@ -732,6 +754,7 @@
             border-radius: 1.5rem;
             border: 1px solid var(--slate-700);
             padding: 2rem;
+            padding-bottom: 2rem; /* ✅ Alt padding ekledik */
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -763,7 +786,17 @@
             margin-top: 1rem;
             border-top: 1px solid var(--slate-700);
             padding-top: 1.5rem;
+            padding-bottom: 1.5rem; /* ✅ Bu satırı ekle */
             flex-shrink: 0;
+        }
+
+        #follow-up-input::placeholder {
+            color: var(--slate-400);
+        }
+
+        #follow-up-input:focus {
+            outline: 2px solid var(--sky-500);
+            border-color: var(--sky-500);
         }
 
         .chat-message {
@@ -774,6 +807,10 @@
             font-size: 0.9rem;
             max-width: 90%;
             word-wrap: break-word;
+            overflow-wrap: break-word; /* ✅ Ekledik */
+            word-break: break-word; /* ✅ Uzun kelimeleri böl */
+            white-space: pre-wrap; /* ✅ Satır atlamalarını koru */
+            overflow-x: hidden; /* ✅ Yatay scroll'u kapat */
             flex-shrink: 0;
         }
 
@@ -814,6 +851,7 @@
         .follow-up-input-group {
             display: flex;
             gap: 0.5rem;
+            align-items: stretch; /* Ekledik */
         }
 
         #follow-up-input {
@@ -823,8 +861,20 @@
             border-radius: 0.5rem;
             padding: 0.75rem;
             color: var(--slate-100);
-            font-size: 0.9rem;
+            font-size: 16px; /* iOS zoom önleme */
+            font-family: 'Inter', sans-serif;
+            min-height: 48px;
+            max-height: 120px;
+            resize: none;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            overflow-x: hidden; /* Yatay scroll kapalı */
+            overflow-y: auto;
+            line-height: 1.5;
+            box-sizing: border-box;
         }
+
 
         #follow-up-btn {
             background-color: var(--sky-500);
@@ -832,10 +882,13 @@
             border-radius: 0.5rem;
             color: white;
             font-weight: 600;
-            padding: 0 1.5rem;
+            padding: 0.75rem 1.5rem; /* Artırıldı */
             cursor: pointer;
             transition: background-color 0.2s;
+            white-space: nowrap; /* Buton metnini tek satırda tutar */
+            min-width: 80px; /* ✅ Ekledik - butonun ezilmemesi için */
         }
+
 
         #follow-up-btn:hover {
             background-color: var(--sky-400);
@@ -892,6 +945,7 @@
                 display: flex;
                 gap: 2rem;
                 align-items: stretch;
+                min-height: 70vh;
             }
 
             .left-column {
@@ -908,57 +962,123 @@
             .report-container {
                 max-width: none;
             }
+
+            .left-column > .map-container,
+            .left-column > .schematic-container {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Panellerin içindeki asıl içerik alanlarının da bu yeni boşluğu doldurmasını sağlar */
+            .map-container > .interactive-map-svg,
+            .schematic-container > div {
+                flex-grow: 1;
+                min-height: 0;
+            }
+
+            /* Şema SVG'sinin, büyüyen container'ına tam olarak ve bozulmadan yayılmasını sağlar */
+            .schematic-container .detail-schematic-svg {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
         }
 
         @media (max-width: 1023px) {
+
+            .inspector-container {
+                padding: 1.5rem;
+                padding-bottom: 2rem; /* ✅ Alt boşluk */
+                border-radius: 1.5rem; /* ✅ Köşeler yuvarlak kalsın */
+            }
+
+            .follow-up-section {
+                padding-bottom: 2.5rem; /* ✅ Mobilde biraz daha az */
+                margin-top: auto;
+            }
+
+            .left-column {
+                width: 100%;
+            }
+            .map-container,
+            .schematic-container {
+                padding: 1rem;
+            }
+
             .main-layout {
                 display: flex;
                 flex-direction: column;
             }
 
             .right-column {
-                display: block;
-                position: static;
+                display: flex;
+                flex-direction: column;
+                min-height: 600px; /* Artırıldı */
                 width: 100%;
                 margin-top: 1rem;
-                height: 50vh;
-                max-height: 50vh;
-                overflow: hidden;
+                position: static;
             }
 
-            .inspector-container {
-                padding: 1rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .selection-card {
-                padding: 2rem;
-                width: 80%;
+            .right-column > #ai-inspector-wrapper {
+                flex: 1;
+                display: flex;
+                flex-direction: column; /* Ekledik */
+                min-height: 600px; /* Artırıldı */
+                width: 100%;
             }
 
-            #component-list .component-row {
+            .right-column .inspector-container {
+                padding: 1.5rem;
+                display: flex;
                 flex-direction: column;
+                min-height: 600px; /* Artırıldı */
+                flex: 1; /* Ekledik */
+            }
+
+            .right-column .inspector-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                min-height: 400px; /* Ekledik */
+            }
+
+            .right-column #chat-log {
+                flex: 1;
+                overflow-y: auto;
+                min-height: 300px; /* Artırıldı */
+                max-height: 400px; /* Ekledik - taşmayı önler */
+            }
+
+
+            .follow-up-input-group {
+                display: flex;
+                gap: 0.5rem;
                 align-items: stretch;
             }
 
-            #component-list .component-controls {
-                display: flex;
-                flex-wrap: wrap;
-                align-items: flex-start;
-                gap: 1rem;
-                margin-top: 1rem;
+            #follow-up-input {
+                min-height: 48px;
+                font-size: 16px;
+                padding: 0.75rem;
             }
 
-            #component-list .quantity-controls {
-                order: 2;
-                margin-left: auto;
-            }
-
-            #component-list .status-select {
-                order: 1;
+            #follow-up-btn {
+                background-color: var(--sky-500);
+                border: none;
+                border-radius: 0.5rem;
+                color: white;
+                font-weight: 600;
+                padding: 0.75rem 1.5rem;
+                cursor: pointer;
+                transition: background-color 0.2s;
+                white-space: nowrap;
+                min-width: 80px;
+                align-self: flex-end; /* ✅ Buton alta hizalansın */
             }
         }
+
+
 
         @media (max-width: 480px) {
             .header-section {
@@ -979,6 +1099,15 @@
 
             #back-btn-header {
                 right: 0;
+            }
+
+            #admin-login-btn {
+                padding: 0.75rem;
+                width: auto;
+            }
+
+            #admin-login-btn span {
+                display: none;
             }
         }
 

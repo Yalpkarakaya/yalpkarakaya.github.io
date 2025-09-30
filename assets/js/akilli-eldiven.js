@@ -23,22 +23,22 @@
     const ADMIN_EMAILS = ["yalp@admin.com", "ezgi@admin.com", "kectny@admin.com"];
 
     // --- API ANAHTARLARI VE YARDIMCI FONKSİYONLAR ---
-    const apiKeys = [
-        'AIzaSyAGQ_o5-p4m1OEaWYRHwjQZ30oOpKRrAw8',
-        'AIzaSyBmX9hT1HQ4iD8u8fueHoyLFEuBkI5gY-c',
-        'AIzaSyDjZ2MhrMV5wsXo-Fh-Fr7V3sO-R2AAwAM',
+    const apiKeysEncoded = [
+        'QUl6YVN5QUdRX281LXA0bTFPRWFXWVJId2pRWjMwb09wS1JyQXc4',
+        'QUl6YVN5Qm1YOWhUMUhRNGlEOHU4ZnVlSG95TEZFdUJrSTVnWS1j',
+        'QUl6YVN5RGpaMk1ock1WNXdzWG8tRmgtRnI3VjNzTy1SMkFBd0FN',
 
-        'AIzaSyDMI1kFaZOD15NdavWCBm2O_oBFNCWAS5c',
-        'AIzaSyDc_aS2n97yAOXRFxBZ-W5oLM9QR5d3yco',
-        'AIzaSyDzaNQeSYcRMjfiNbxFkp3ST7lTqTBLXH8',
+        'QUl6YVN5RE1JMWtGYVpPRDE1TmRhdldDQm0yT19vQkZOQ1dBUzVj',
+        'QUl6YVN5RGNfYVMybjk3eUFPWFJGeEJaLVc1b0xNOVFSNWQzeWNv',
+        'QUl6YVN5RHphTlFlU1ljUk1qZmlOYnhGa3AzU1Q3bFRxVEJMWEg4',
     ];
 
     let currentApiIndex = 0;
 
-    function getNextApiKey() {
-        const key = apiKeys[currentApiIndex];
-        currentApiIndex = (currentApiIndex + 1) % apiKeys.length;
-        return key;
+    function getNextApiKeyAndDecode() {
+        const encodedKey = apiKeysEncoded[currentApiIndex];
+        currentApiIndex = (currentApiIndex + 1) % apiKeysEncoded.length;
+        return atob(encodedKey); // atob() fonksiyonu Base64 kodunu çözer
     }
 
     const proApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent`;
@@ -679,14 +679,57 @@ switch (gelen_karakter) {
     const softwareData = getSoftwareData();
 
     // --- OLAY DİNLEYİCİLERİ ---
+    // YENİ EKLENECEK BLOK:
+    window.addEventListener('popstate', (event) => {
+        if (event.state && event.state.view) {
+            const view = event.state.view;
+            const [mainView, subView] = view.split('-');
+
+            if (mainView === 'main') {
+                // Ana menüye dönmek için homeBtn'nin orijinal tıklama mantığını kullanıyoruz.
+                selectionContainer.style.display = 'flex';
+                [hardwareGuideContainer, softwareGuideContainer, reportGuideContainer, detailsGuideContainer].forEach(c => c.style.display = 'none');
+                homeBtn.style.display = 'none';
+                backBtnHeader.style.display = 'none';
+                mainSubtitle.textContent = 'Lütfen bir kılavuz seçin';
+                aiModalOverlay.classList.remove('visible');
+            } else if (mainView === 'details' && !subView) {
+                // Detaylar ana menüsüne dön
+                showGuide('details');
+                showRoom();
+            } else if (mainView === 'details' && subView) {
+                // Detaylar alt menüsüne dön
+                showGuide('details');
+                showRoom(subView);
+            } else {
+                // Diğer ana kılavuzlara dön
+                showGuide(mainView);
+            }
+        }
+    });
     // Ana seçim kartları
-    document.getElementById('select-hardware').addEventListener('click', () => showGuide('hardware'));
-    document.getElementById('select-software').addEventListener('click', () => showGuide('software'));
-    document.getElementById('select-report').addEventListener('click', () => showGuide('report'));
-    document.getElementById('select-details').addEventListener('click', () => showGuide('details'));
+    document.getElementById('select-hardware').addEventListener('click', () => {
+        window.history.pushState({view: 'hardware'}, '', '#hardware');
+        showGuide('hardware');
+    });
+    document.getElementById('select-software').addEventListener('click', () => {
+        window.history.pushState({view: 'software'}, '', '#software');
+        showGuide('software');
+    });
+    document.getElementById('select-report').addEventListener('click', () => {
+        window.history.pushState({view: 'report'}, '', '#report');
+        showGuide('report');
+    });
+    document.getElementById('select-details').addEventListener('click', () => {
+        window.history.pushState({view: 'details'}, '', '#details');
+        showGuide('details');
+    });
+
 
     // Ana sayfa ve geri dönüş butonları
     homeBtn.addEventListener('click', () => {
+        window.history.pushState({view: 'main'}, '', '#main');
+        // homeBtn'nin kendi orijinal kodu zaten ana menüyü gösteriyor, o yüzden onu çağırıyoruz:
         selectionContainer.style.display = 'flex';
         [hardwareGuideContainer, softwareGuideContainer, reportGuideContainer, detailsGuideContainer].forEach(c => c.style.display = 'none');
         homeBtn.style.display = 'none';
@@ -696,8 +739,9 @@ switch (gelen_karakter) {
     });
 
     backBtnHeader.addEventListener('click', () => {
-        showRoom();
+        window.history.back(); // Bu buton artık sadece tarayıcının geri fonksiyonunu tetikleyecek
     });
+
 
     // --- ANA KUILAVUZ FONKSİYONU ---
     function showGuide(type) {
@@ -752,9 +796,18 @@ switch (gelen_karakter) {
 
     // --- DETAY SAYFALARI ---
     // Detay seçim kartları
-    document.getElementById('select-project-report').addEventListener('click', () => showRoom('report'));
-    document.getElementById('select-personal-info').addEventListener('click', () => showRoom('personal-info'));
-    document.getElementById('select-credits').addEventListener('click', () => showRoom('credits'));
+    document.getElementById('select-project-report').addEventListener('click', () => {
+        window.history.pushState({view: 'details-report'}, '', '#details-report');
+        showRoom('report');
+    });
+    document.getElementById('select-personal-info').addEventListener('click', () => {
+        window.history.pushState({view: 'details-personal-info'}, '', '#details-personal-info');
+        showRoom('personal-info');
+    });
+    document.getElementById('select-credits').addEventListener('click', () => {
+        window.history.pushState({view: 'details-credits'}, '', '#details-credits');
+        showRoom('credits');
+    });
 
     function showRoom(roomType) {
         const allRooms = [projectReportContainer, personalInfoContainer, creditsContainer];
@@ -876,7 +929,7 @@ switch (gelen_karakter) {
         addContributorBtn.textContent = "Ekleniyor...";
         addContributorBtn.disabled = true;
 
-        const systemPrompt = "Sana verilen metni, bir liste elemanı (<li>) olarak formatla. Başka hiçbir şey ekleme, sadece <li>...</li> döndür.";
+        const systemPrompt = "Sen bir proje için 'Emeği Geçenler' listesi hazırlayan bir asistansın. Sana verilecek olan 'İsim, Rol' formatındaki metni, o kişinin projeye olan katkısını açıklayan resmi ve profesyonel bir cümleye dönüştür. Cevabın SADECE bu cümleyi içeren bir HTML liste elemanı (`<li>...</li>`) olmalı. Başka hiçbir açıklama veya metin ekleme. Örnek: Girdi: 'Ahmet Yılmaz, Kodlama' -> Çıktı: '<li>Ahmet Yılmaz - Projenin yazılım geliştirme ve kodlama süreçlerine katkıda bulunmuştur.</li>'";
 
         try {
             const result = await addToApiQueue(() => callGemini([{role: 'user', parts: [{text: input}]}], {parts: [{text: systemPrompt}]}, flashApiUrl));
@@ -958,63 +1011,68 @@ switch (gelen_karakter) {
         }
     }
 
-        function createListItem(componentName, level, index) {
-            const li = document.createElement('li');
-            const component = componentList.find(c => c.name === componentName);
-            if (!component) return document.createDocumentFragment();
 
-            const adminControlsHTML = `
-                <select class="status-select" data-index="${index}">
-                    <option value="Temin Edilecek" ${component.status === 'Temin Edilecek' ? 'selected' : ''}>Temin Edilecek</option>
-                    <option value="Stokta" ${component.status === 'Stokta' ? 'selected' : ''}>Stokta</option>
-                    <option value="Monte Edildi" ${component.status === 'Monte Edildi' ? 'selected' : ''}>Monte Edildi</option>
-                </select>
-                <div class="quantity-controls">
-                    <button class="quantity-btn" data-index="${index}" data-action="decrease">-</button>
-                    <span>${component.quantity} adet</span>
-                    <button class="quantity-btn" data-index="${index}" data-action="increase">+</button>
-                </div>
-            `;
+    function createListItem(componentName, level, index) {
+        const li = document.createElement('li');
+        const component = componentList.find(c => c.name === componentName);
+        if (!component) return document.createDocumentFragment();
 
-            const guestViewHTML = `
-                <span style="background-color: var(--slate-700); padding: 0.25rem 0.75rem; border-radius: 0.5rem;">${component.quantity} adet</span>
-                <span style="background-color: var(--slate-700); padding: 0.25rem 0.75rem; border-radius: 0.5rem;">${component.status}</span>
-            `;
+        // Önceki adımda eklenen isGuest, helpButtonTitle gibi değişkenleri sildiğinizden emin olun.
 
-            li.dataset.index = index;
-            li.innerHTML = `
-                <div class="delete-swipe-bar">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
-                </div>
-                <div class="component-wrapper">
-                    <div class="component-row">
-                        <div class="component-main">
-                            <button class="ai-help-btn" data-name="${component.name}" title="Yapay zekaya bu komponent hakkında ipucu ver">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>
-                                </svg>
-                            </button>
-                            <span>${component.name}</span>
-                        </div>
-                        <div class="component-controls">
-                            ${isAdmin ? adminControlsHTML : guestViewHTML}
-                        </div>
+        const adminControlsHTML = `
+            <select class="status-select" data-index="${index}">
+                <option value="Temin Edilecek" ${component.status === 'Temin Edilecek' ? 'selected' : ''}>Temin Edilecek</option>
+                <option value="Stokta" ${component.status === 'Stokta' ? 'selected' : ''}>Stokta</option>
+                <option value="Monte Edildi" ${component.status === 'Monte Edildi' ? 'selected' : ''}>Monte Edildi</option>
+            </select>
+            <div class="quantity-controls">
+                <button class="quantity-btn" data-index="${index}" data-action="decrease">-</button>
+                <span>${component.quantity} adet</span>
+                <button class="quantity-btn" data-index="${index}" data-action="increase">+</button>
+            </div>
+        `;
+
+        const guestViewHTML = `
+            <span style="background-color: var(--slate-700); padding: 0.25rem 0.75rem; border-radius: 0.5rem;">${component.quantity} adet</span>
+            <span style="background-color: var(--slate-700); padding: 0.25rem 0.75rem; border-radius: 0.5rem;">${component.status}</span>
+        `;
+
+        li.dataset.index = index;
+        li.innerHTML = `
+            <div class="delete-swipe-bar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+            </div>
+            <div class="component-wrapper">
+                <div class="component-row">
+                    <div class="component-main">
+                        ${/* YENİ KOŞULLU YAPI BURADA */ ''}
+                        ${isAdmin ? `
+                        <button class="ai-help-btn" data-name="${component.name}" title="Yapay zekaya bu komponent hakkında ipucu ver">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>
+                            </svg>
+                        </button>
+                        ` : ''}
+                        <span>${component.name}</span>
                     </div>
-                    <div class="ai-hint-panel" style="${isAdmin ? '' : 'display:none;'}">
-                        <p><strong>"${component.name}"</strong> için ipucu:</p>
-                        <div class="ai-hint-input-group">
-                            <input type="text" class="ai-hint-input" placeholder="Kullanıldığı aşama (örn: Giriş Katı)" value="${userHints[component.name] || ''}">
-                            <button class="ai-hint-submit">Bildir</button>
-                        </div>
+                    <div class="component-controls">
+                        ${isAdmin ? adminControlsHTML : guestViewHTML}
                     </div>
                 </div>
-            `;
-            return li;
-        }
-
+                <div class="ai-hint-panel" style="${isAdmin ? '' : 'display:none;'}">
+                    <p><strong>"${component.name}"</strong> için ipucu:</p>
+                    <div class="ai-hint-input-group">
+                        <input type="text" class="ai-hint-input" placeholder="Kullanıldığı aşama (örn: Giriş Katı)" value="${userHints[component.name] || ''}">
+                        <button class="ai-hint-submit">Bildir</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        return li;
+    }
 
     // Komponent ekleme
     function addComponent() {
@@ -1183,15 +1241,15 @@ switch (gelen_karakter) {
             hintInput.value = hint;
             wrapper.querySelector('.ai-hint-panel').style.display = 'none';
         } else if (quantityBtn) {
-            const action = quantityBtn.dataset.action;
-            if (action === 'increase') {
-                componentList[index].quantity++;
-            } else if (action === 'decrease' && componentList[index].quantity > 0) {
-                componentList[index].quantity--;
-            }
-            saveComponentDataToFirebase();
-            renderComponentList(componentList);
-        } else if (statusSelect) {
+        const action = quantityBtn.dataset.action;
+        if (action === 'increase') {
+            componentList[index].quantity++;
+        } else if (action === 'decrease' && componentList[index].quantity > 1) {
+            componentList[index].quantity--;
+        }
+        saveComponentDataToFirebase();
+        renderComponentList(componentList);
+    } else if (statusSelect) {
             componentList[index].status = statusSelect.value;
             saveComponentDataToFirebase();
         }
@@ -1315,8 +1373,10 @@ switch (gelen_karakter) {
         let currentStageId = Object.keys(stages)[0];
         let currentNodeInfo = {};
 
+        let analysisClickCount = 0; // ✅ YENİ: Basit bir sayaç tanımlıyoruz.
+
         aiModalOverlay.classList.remove('visible');
-        clearChat(false);
+        clearChat();
         addMessageToChat("Devre şemasından bir bağlantıya veya akış şemasından bir adıma tıklayarak anlık analiz başlatabilirsiniz.", 'ai');
 
         function renderMap() {
@@ -1392,52 +1452,64 @@ switch (gelen_karakter) {
             });
         }
 
-        function handleNodeClick(event) {
-            const node = event.currentTarget;
-            const netId = node.dataset.netId;
+         function handleNodeClick(event) {
+                analysisClickCount = 0; // ✅ YENİ: Yeni bir eleman seçildiğinde sayacı sıfırla.
 
-            if (!netId || !details[currentStageId] || !details[currentStageId][netId]) return;
+                const node = event.currentTarget;
+                const netId = node.dataset.netId;
 
-            schematicContainer.querySelectorAll('.net-node').forEach(n => n.classList.remove('highlight'));
-            schematicContainer.querySelectorAll(`[data-net-id="${netId}"]`).forEach(n => n.classList.add('highlight'));
+                if (!netId || !details[currentStageId] || !details[currentStageId][netId]) return;
 
-            const detailInfo = details[currentStageId][netId];
-            currentNodeInfo = {
-                type,
-                stage: stages[currentStageId],
-                component: node.dataset.component,
-                pin: node.dataset.pin,
-                net: detailInfo
-            };
+                schematicContainer.querySelectorAll('.net-node').forEach(n => n.classList.remove('highlight'));
+                schematicContainer.querySelectorAll(`[data-net-id="${netId}"]`).forEach(n => n.classList.add('highlight'));
 
-            if (connectionList) {
-                connectionList.innerHTML = detailInfo.connections.map(conn => `<li>${conn}</li>`).join('');
+                const detailInfo = details[currentStageId][netId];
+                currentNodeInfo = {
+                    type,
+                    stage: stages[currentStageId],
+                    component: node.dataset.component,
+                    pin: node.dataset.pin,
+                    net: detailInfo
+                };
+
+                if (connectionList) {
+                    connectionList.innerHTML = detailInfo.connections.map(conn => `<li>${conn}</li>`).join('');
+                }
+
+                if (connectionListContainer) connectionListContainer.style.display = 'block';
+
+                triggerAiInspector(currentNodeInfo);
             }
 
-            if (connectionListContainer) connectionListContainer.style.display = 'block';
+            mapSvg.addEventListener('click', (e) => {
+                const stageId = e.target.closest('.block')?.dataset.stage;
+                if (stageId) selectStage(stageId);
+            });
 
-            triggerAiInspector(currentNodeInfo);
+            // ✅ "Analiz Et" butonu olay dinleyicisini basitleştiriyoruz
+            analyzeBtn.addEventListener('click', () => {
+                if (isButtonOnCooldown('analyze-btn')) {
+                    return;
+                }
+                setButtonCooldown('analyze-btn');
+
+                if (currentNodeInfo.net) {
+                    analysisClickCount++; // Sayacı bir artır
+                    handleAnalyzeConnection(currentNodeInfo, analysisClickCount); // ve fonksiyona gönder
+
+                    const aiInspector = document.getElementById('ai-inspector-wrapper');
+                    if (aiInspector) {
+                        setTimeout(() => {
+                            aiInspector.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 100);
+                    }
+                }
+            });
+
+            renderMap();
+            selectStage(currentStageId);
         }
 
-        mapSvg.addEventListener('click', (e) => {
-            const stageId = e.target.closest('.block')?.dataset.stage;
-            if (stageId) selectStage(stageId);
-        });
-
-        analyzeBtn.addEventListener('click', () => {
-            if (isButtonOnCooldown('analyze-btn')) {
-                return;
-            }
-            setButtonCooldown('analyze-btn');
-
-            if (currentNodeInfo.net) {
-                handleAnalyzeConnection(currentNodeInfo);
-            }
-        });
-
-        renderMap();
-        selectStage(currentStageId);
-    }
 
     // --- YARDIMCI FONKSİYONLAR ---
     function showToast(message) {
@@ -1469,9 +1541,9 @@ switch (gelen_karakter) {
     async function callGemini(history, systemInstruction, modelUrl) {
         let lastError = null;
 
-        for (let attempt = 0; attempt < apiKeys.length; attempt++) {
+        for (let attempt = 0; attempt < apiKeysEncoded.length; attempt++) {
             try {
-                const apiKey = getNextApiKey();
+                const apiKey = getNextApiKeyAndDecode();
                 const payload = {
                     contents: history,
                     systemInstruction
@@ -1620,30 +1692,45 @@ switch (gelen_karakter) {
         }
     }
 
-    async function handleAnalyzeConnection(nodeContext) {
+    async function handleAnalyzeConnection(nodeContext, level) {
         if (!nodeContext || !nodeContext.net) return;
 
-        addMessageToChat(`Bu ${nodeContext.type === 'hardware' ? 'bağlantıyı' : 'adımı'} analiz et`, 'user');
+        const userMessage = level === 1 ?
+            `Bu ${nodeContext.type === 'hardware' ? 'bağlantıyı' : 'adımı'} analiz et` :
+            `Daha detaylı analiz et`;
+        addMessageToChat(userMessage, 'user');
+
         const loaderMessage = addMessageToChat('<div class="loader"></div>', 'loader');
 
+        let systemInstruction;
+        let userPrompt;
+        const nodeName = `"${nodeContext.net.name}"`;
+
+        // Seviyeye göre daha zengin ve detaylı komutlar
+        if (level === 1) { // 1. Tıklama: "Ne?" - Temel Görev
+            systemInstruction = { parts: [{ text: "Sen, bir elektronik mühendisliği asistanısın. Görevin, bir devre parçasının temel amacını ve görevini net, teknik ve 2-3 cümleyle açıklamaktır." }] };
+            userPrompt = `Analiz Edilecek Bağlantı: ${nodeName}. Bu bağlantının devredeki temel amacı ve birincil görevi nedir? Teknik olarak ne işe yaradığını özetle.`;
+        } else if (level === 2) { // 2. Tıklama: "Nasıl ve Neden?" - Detaylı ve Analojili Açıklama
+            systemInstruction = { parts: [{ text: "Sen, karmaşık teknik konuları basit analojilerle açıklayan bir mühendislik öğretmenisin. Cevabın en az 4-5 cümle uzunluğunda, açıklayıcı ve başlangıç seviyesindekiler için uygun olmalı." }] };
+            userPrompt = `${nodeName} adlı bağlantıyı bir acemiye anlatır gibi detaylandır. İlk olarak, bu bağlantının nasıl çalıştığını gündelik hayattan bir analoji (benzetme) kullanarak anlat. Sonrasında, bu parçanın devrenin genel çalışması için neden kritik olduğunu ve bu parça olmasaydı tam olarak ne gibi sorunlar yaşanacağını teknik ama anlaşılır bir dille izah et.`;
+        } else { // 3. ve Sonraki Tıklamalar: "Riskler ve Optimizasyonlar?" - Uzman Analizi
+            systemInstruction = { parts: [{ text: "Sen, bir kıdemli donanım mühendisisin. Derinlemesine teknik analizler yapıyorsun. Cevapların detaylı, profesyonel ve ileri seviye bilgiler içermeli. Maddeler halinde veya uzun paragraflarla açıklayabilirsin." }] };
+            userPrompt = `${nodeName} adlı bağlantı için ileri seviye bir mühendislik analizi yap. Bu tür bir bağlantı veya devre aşaması tasarlanırken karşılaşılabilecek yaygın zorluklar veya tasarım hataları nelerdir? Gürültü (noise), sinyal bütünlüğü (signal integrity) veya güç verimliliği gibi konularda ne gibi potansiyel sorunlar ortaya çıkabilir? Devrenin performansını iyileştirmek için bu noktada ne gibi optimizasyonlar veya alternatif yaklaşımlar önerirsin?`;
+        }
+
         try {
-            let systemInstruction, prompt;
-
-            if (nodeContext.type === 'hardware') {
-                systemInstruction = {parts: [{text: "Sen, bir elektronik devre analizi uzmanısın. Cevapların KESİNLİKLE Türkçe ve aşırı derecede öz olmalıdır. Sadece 1-2 cümlelik, teknik olarak doğru ve net bir analiz yap. Laf kalabalığı, giriş cümlesi, maddelendirme veya detaylı açıklamalar KULLANMA. Sadece en temel prensibi ve görevi belirt."}]};
-                prompt = `Analiz Edilecek Bağlantı: "${nodeContext.net.name}". Bu bağlantının devredeki bütünsel görevini TEK bir cümle ile özetle. Ardından, bu görevi nasıl yerine getirdiğini en fazla bir teknik cümle ile açıkla.`;
-            } else {
-                systemInstruction = {parts: [{text: "Sen, bir yazılım mimarisi uzmanısın. Cevapların KESİNLİKLE Türkçe ve aşırı derecede öz olmalıdır. Sadece 1-2 cümlelik, teknik olarak doğru ve net bir analiz yap. Laf kalabalığı, giriş cümlesi, maddelendirme veya detaylı açıklamalar KULLANMA. Sadece en temel prensibi ve görevi belirt."}]};
-                prompt = `Analiz Edilecek Algoritma Adımı: "${nodeContext.net.name}". Bu adımın projenin genel çalışmasındaki önemini TEK bir cümle ile özetle. Ardından, bu adım olmadan sistemin neden düzgün çalışmayacağını en fazla bir teknik cümle ile açıkla.`;
+            const tempHistory = [...conversationHistory];
+            if (tempHistory.length > 4) {
+                tempHistory.splice(0, tempHistory.length - 4);
             }
+            tempHistory.push({ role: 'user', parts: [{ text: userPrompt }] });
 
-            const tempHistory = [...conversationHistory, { role: 'user', parts: [{ text: prompt }] }];
             const result = await addToApiQueue(() => callGemini(tempHistory, systemInstruction, flashApiUrl));
 
             loaderMessage.remove();
             addMessageToChat(result, 'ai');
             conversationHistory.push(
-                { role: 'user', parts: [{ text: prompt }] },
+                { role: 'user', parts: [{ text: userPrompt }] },
                 { role: 'model', parts: [{ text: result }] }
             );
         } catch(error) {
@@ -1677,13 +1764,28 @@ switch (gelen_karakter) {
             aiModalOverlay.classList.add('visible');
 
             detailsAiContext = context;
-            clearChat(false);
+            clearChat();
 
             const promptMessage = context === 'edit-report'
                 ? 'Mevcut raporu nasıl geliştirebilirim? (örn: "raporu daha akademik bir dille yaz" veya "sonuç bölümünü ekle").'
                 : 'Mevcut kişisel bilgileri nasıl güncelleyebilirim? (örn: "okul adını X olarak değiştir").';
 
             addMessageToChat(promptMessage, 'ai');
+
+                    setTimeout(() => {
+            const chatLog = document.getElementById('chat-log');
+            const followUpSection = document.getElementById('follow-up-section');
+
+            if (chatLog) chatLog.style.display = 'flex';
+            if (followUpSection) followUpSection.style.display = 'block';
+
+            // Inspector content'i zorla göster
+            const inspectorContent = document.getElementById('inspector-content');
+            if (inspectorContent) {
+                inspectorContent.style.display = 'flex';
+                inspectorContent.style.visibility = 'visible';
+            }
+        }, 100);
         });
     };
 
@@ -1698,14 +1800,20 @@ switch (gelen_karakter) {
     });
 
     followUpBtn.addEventListener('click', handleFollowUpQuestion);
-    followUpInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            followUpBtn.click();
-        }
+        followUpInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                followUpBtn.click();
+            }
+
+        followUpInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
     });
 
-    clearChatBtn.addEventListener('click', () => clearChat(true));
+    clearChatBtn.addEventListener('click', () => clearChat());
 
     // AI Inspector'ı body'e yerleştir ve gizle
     document.body.appendChild(aiInspectorWrapper);
@@ -1815,5 +1923,5 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // --- BAŞLANGIÇ AYARLARI ---
-toggleAdminMode(false); // Uygulama ilk açıldığında her zaman okuma modunda başlar.
-
+toggleAdminMode(false);
+window.history.replaceState({view: 'main'}, '', '#main');
