@@ -1,3 +1,363 @@
+    document.addEventListener('DOMContentLoaded', function () {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$', right: '$', display: false}
+            ],
+            throwOnError : false
+        });
+
+        Chart.register(ChartDataLabels);
+
+        const themeColors = { slate400: '#94a3b8', slate800: '#1e293b', slate700: '#334155', sky500: '#0ea5e9', sky400: '#38bdf8', emerald500: '#10b981', amber400: '#fbbf24', red500: '#ef4444', slate100: '#f1f5f9' };
+        Chart.defaults.color = themeColors.slate400;
+        Chart.defaults.font.family = 'Inter';
+        const globalChartOptions = (isDonut = false) => ({ responsive: true, maintainAspectRatio: false, plugins: { legend: { position: isDonut ? 'bottom' : 'top', labels: { padding: 20 } }, tooltip: { backgroundColor: themeColors.slate800, borderColor: themeColors.slate700, borderWidth: 1, padding: 12, titleFont: { weight: 'bold' }, bodyFont: { size: 14 } } } });
+
+        new Chart(document.getElementById('componentDonutChart').getContext('2d'), { type: 'doughnut', data: { labels: ['MCU', 'IMU', 'RF Kanalı', 'Güç Yönetimi'], datasets: [{ data: [2, 1, 8, 1], backgroundColor: [themeColors.sky500, themeColors.emerald500, themeColors.amber400, themeColors.red500], borderColor: themeColors.slate800, borderWidth: 4 }] }, options: { ...globalChartOptions(true), cutout: '70%' } });
+
+        let costBarChartInstance = null;
+        function createCostBarChart() {
+            if (costBarChartInstance) return;
+            costBarChartInstance = new Chart(document.getElementById('costBarChart').getContext('2d'), { type: 'bar', data: { labels: ['MCU & Saat', 'IMU', 'RF Kanalları', 'Güç Yönetimi'], datasets: [{ label: 'Tahmini Maliyet (USD)', data: [18, 20, 50, 12], backgroundColor: [themeColors.sky500, themeColors.emerald500, themeColors.amber400, themeColors.red500], borderRadius: 4 }] }, options: { ...globalChartOptions(false), indexAxis: 'y', scales: { x: { grid: { color: themeColors.slate700 } }, y: { grid: { display: false } } } } });
+        }
+
+        const qFactorCtx = document.getElementById('qFactorChart').getContext('2d');
+        new Chart(qFactorCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Hesaplanan', 'Simülasyon', 'İstenen'],
+                datasets: [{
+                    data: [25.5, 25.8, 60],
+                    backgroundColor: [themeColors.amber400, themeColors.sky400, themeColors.emerald500],
+                    borderRadius: 12,
+                    borderSkipped: false,
+                    borderWidth: 1,
+                    borderColor: 'rgba(255,255,255,0.1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 70,
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: themeColors.slate100,
+                        font: { weight: 'bold', size: 12 }
+                    }
+                }
+            }
+        });
+
+
+        document.querySelectorAll('.detail-toggle').forEach(button => {
+            button.addEventListener('click', () => {
+                const target = document.getElementById(button.dataset.target);
+                const isExpanded = target.classList.toggle('expanded');
+                button.setAttribute('aria-expanded', isExpanded);
+                button.textContent = isExpanded ? button.dataset.textExpanded : button.dataset.textDefault;
+                if (button.dataset.target === 'hardware-details' && isExpanded) {
+                    createCostBarChart();
+                }
+            });
+        });
+
+        const archBlocks = document.querySelectorAll('.arch-block');
+        archBlocks.forEach(block => {
+            block.addEventListener('click', () => {
+                archBlocks.forEach(b => b.classList.remove('active'));
+                block.classList.add('active');
+                document.getElementById('arch-details').innerHTML = `<h3 class="font-bold text-lg mb-2 text-sky-500">${block.dataset.title}</h3><p>${block.dataset.desc}</p>`;
+            });
+        });
+
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            const isActive = document.body.classList.toggle('menu-active');
+            menuBtn.setAttribute('aria-expanded', isActive);
+        });
+
+
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('main section');
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id));
+                }
+            });
+        }, { rootMargin: '-50% 0px -50% 0px' });
+        sections.forEach(section => sectionObserver.observe(section));
+
+        const animationObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.animated-section').forEach(section => animationObserver.observe(section));
+
+        // --- YOL HARİTASI (FAZLAR) BÖLÜMÜ ---
+        const phaseData = [
+            {
+                title: 'Faz 1: Donanım ve Pasif Sistem Karakterizasyonu', status: 'completed',
+                details: {
+                    wbs: [
+                        "PCB Montajı: Lehim pastası serimi, SMD komponent dizgisi, Reflow fırınlama, THT komponent lehimlemesi.",
+                        "Güç Sistemi Doğrulaması: Regülatör çıkış voltajlarının (3.3V) doğruluğunun ve kararlılığının ölçümü.",
+                        "Pasif Sistem Testleri: VNA ile rezonatörlerin empedans ölçümü, rezonans frekansı ($f_0$) ve Kalite (Q) faktörünün tespiti."
+                    ],
+                    resources: {
+                        hardware: "Vektör Network Analizörü (VNA), Osiloskop, Ayarlı Güç Kaynağı, Lehimleme İstasyonu",
+                        software: "KiCad (PCB Tasarım), SPICE (Simülasyon)",
+                        personnel: "PCB Tasarımcısı, Elektronik Teknisyeni"
+                    },
+                    deliverables: "Montajı tamamlanmış PCB (v1.0), Güç sistemi test raporu, Pasif sistem karakterizasyon raporu (VNA ölçüm sonuçları ile).",
+                    risks: [
+                        { id: 'R1.1', text: "Lehimleme hatalarından (kısa devre/açık devre) devre fonksiyonunu engellenmesi.", mitigation: "Montaj sonrası mikroskop altında detaylı görsel inceleme ve sürekliliik testleri.", level: "medium" },
+                    ],
+                    timeline: "5 adam-gün"
+                }
+            },
+            {
+                title: 'Faz 2: Aktif Devre Entegrasyonu ve Q-Faktörü Yükseltmesi', status: 'in-progress',
+                details: {
+                    wbs: [
+                        "Q-Multiplier Devre Entegrasyonu: TLV9061 op-amp ve çevre bileşenlerinin devreye montajı.",
+                        "Kalibrasyon ve Ayarlama: Devrenin kazanç ve geri besleme parametrelerinin, osilasyona girmeden maksimum Q-faktörünü sağlayacak şekilde ayarlanması.",
+                        "Performans Doğrulaması: Ayarlanmış devrenin VNA ile tekrar ölçülerek hedeflenen Q-faktörüne (>65) ulaşıldığının teyit edilmesi."
+                    ],
+                    resources: {
+                        hardware: "VNA, Osiloskop, Sinyal Jeneratörü, Spektrum Analizörü (opsiyonel)",
+                        software: "SPICE (Detaylı simülasyon)",
+                        personnel: "RF Devre Tasarımı yetkinliğine sahip mühendis"
+                    },
+                    deliverables: "Kalibre edilmiş, stabil çalışan Q-Multiplier devresi. Hedef Q-faktörüne ulaşıldığını gösteren karşılaştırmalı test raporu.",
+                    risks: [
+                        { id: 'R2.1', text: "Devrenin kararsız hale gelip osilasyon yapmasından sistemi kullanılamaz hale getirmesi.", mitigation: "Geri besleme döngüsünün dikkatli ayarlanması, gerekirse faz marjını artırmak için ek kompanzasyon bileşenleri eklenmesi.", level: "high" }
+                    ],
+                    timeline: "8 adam-gün"
+                }
+            },
+            {
+                title: 'Faz 3: Sensör Entegrasyonu ve Ham Veri Doğrulaması', status: 'planned',
+                details: {
+                    wbs: [
+                        "ADC Entegrasyonu: MCP3204 ADC'nin SPI arayüzü üzerinden ESP32 ile haberleştirilmesi.",
+                        "IMU Entegrasyonu: BNO085 IMU'nun I2C arayüzü üzerinden ESP32 ile haberleştirilmesi.",
+                        "Veri Akışının Sağlanması: Tüm (4 adet) endüktif kanaldan ve IMU'dan gelen verilerin eş zamanlı ve güvenilir bir şekilde okunup seri port üzerinden loglanması.",
+                        "Veri Doğrulama: Elin bilinen pozisyon ve hareketlerine karşılık gelen sensör verilerinin beklenen aralıklarda ve tutarlı olduğunun kontrolü."
+                    ],
+                    resources: {
+                        hardware: "Lojik Analizörü",
+                        software: "PlatformIO/Arduino IDE, Seri port görüntüleyici (örn: CoolTerm)",
+                        personnel: "Gömülü Yazılım Mühendisi"
+                    },
+                    deliverables: "Tüm sensörlerden gelen ham verileri stabil bir şekilde loglayan firmware. Verilerin tutarlılığını gösteren test raporu.",
+                    risks: [
+                        { id: 'R3.1', text: "Veri yolu (I2C/SPI) çakışmalarından veya gürültüden veri bütünlüğünün bozulması.", mitigation: "Doğru pull-up dirençleri kullanmak, veri yolu hızlarını optimize etmek ve sinyal hatlarını kısa tutmak.", level: "medium" }
+                    ],
+                    timeline: "10 adam-gün"
+                }
+            },
+            {
+                title: 'Faz 4: Deterministik Firmware Altyapısı', status: 'planned',
+                details: {
+                    wbs: [
+                        "Yazılım Mimarisi Seçimi: Zamanlayıcı kesmeleri (timer interrupts) tabanlı bir 'super-loop' mimarisi oluşturulması.",
+                        "Durum Makinesi (State Machine) Tasarımı: Sistemin 'Kalibrasyon', 'Aktif Kontrol', 'Bekleme' gibi durumlarını ve aralarındaki geçişleri yöneten bir yapı kurulması.",
+                        "Görev Zamanlaması: Sensör okuma (yüksek öncelikli), veri işleme ve Bluetooth iletim görevlerinin deterministik aralıklarla çalışmasının sağlanması."
+                    ],
+                    resources: {
+                        hardware: "Osiloskop (görev sürelerini ölçmek için)",
+                        software: "PlatformIO, C++, UML araçları (durum makinesi görselleştirmesi için)",
+                        personnel: "Gömülü Yazılım Mimarisi konusunda deneyimli mühendis"
+                    },
+                    deliverables: "İyi yapılandırılmış, durum makinesi tabanlı, gerçek zamanlı firmware iskeleti. Görevlerin zamanlamasını gösteren mimari dokuman.",
+                    risks: [
+                        { id: 'R4.1', text: "Görevlerin zamanında bitirilmemesinden sistemin kararsız çalışması ve kontrol gecikmesi oluşması.", mitigation: "Kodun optimize edilmesi, gereksiz işlemlerden kaçınılması ve görevlerin yürütme sürelerinin osiloskop ile ölçülerek doğrulanması.", level: "high" }
+                    ],
+                    timeline: "12 adam-gün"
+                }
+            },
+            {
+                title: 'Faz 5: Füzyon Motoru ve Jest Kalibrasyonu', status: 'planned',
+                details: {
+                     wbs: [
+                        "Sensör Füzyon Algoritması Geliştirme: Statik duruş (endüktif sensörler) ve dinamik hareket (IMU) verilerini birleştiren bir eşik tabanlı mantık veya basit bir filtre tasarlanması.",
+                        "Jest Tanımlama: 'İleri git', 'yüksel', 'dön' gibi komutlara karşılık gelen sensör veri desenlerinin tanımlanması.",
+                        "Kalibrasyon Rutini Geliştirme: Sistemin başlangıçta kullanıcının elinin temel duruşlarını (açık el, yumruk) öğrenmesini sağlayan bir kalibrasyon sihirbazı yazılması."
+                    ],
+                    resources: {
+                        hardware: "3D Yazıcı (kalibrasyon ve test jigleri için)",
+                        software: "Python/MATLAB (veri analizi ve algoritma prototipleme için), C++ (gömülü implementasyon)",
+                        personnel: "Gömülü Yazılım Mühendisi, Sinyal İşleme/ML Uzmanı"
+                    },
+                    deliverables: "Ham sensör verilerini drone komutlarına dönüştüren C++ fonksiyon kütüphanesi. Jest tanıma doğruluğunu (>%95) belgeleyen test sonuçları.",
+                    risks: [
+                        { id: 'R5.1', text: "Farklı kullanıcıların el anatomileri veya hareket tarzlarından jest tanıma doğruluğunun düşük olması.", mitigation: "Kalibrasyon rutinini geliştirmek ve algoritmayı daha adaptif hale getirmek için eşik değerlerini ayarlanabilir yapmak.", level: "medium" }
+                    ],
+                    timeline: "15 adam-gün"
+                }
+            },
+            {
+                title: 'Faz 6: Uçtan Uca Entegrasyon ve Sistem Testleri', status: 'planned',
+                details: {
+                    wbs: [
+                        "BLE İletişim Protokolü Tanımlama: Eldiveden gönderilecek komut paketinin (örn: [roll, pitch, yaw, throttle]) formatının belirlenmesi.",
+                        "Mobil Arayüz Geliştirme: Eldiveden gelen BLE verilerini alıp DJI Mobile SDK aracılığıyla drone'a ileten basit bir Android uygulaması geliştirilen.",
+                        "Sistem Performans Testleri: Uçtan uca gecikme süresinin (<200ms) ve jest tanıma doğruluğunun gerçek uçuş senaryolarında ölçülmesi.",
+                        "Güvenlik Mekanizmaları: Bağlantı kopması durumunda drone'un havada sabit kalmasını (hover) sağlayan bir 'failsafe' mekanizması eklenmesi."
+                    ],
+                    resources: {
+                        hardware: "DJI Drone, Android Telefon",
+                        software: "Android Studio, DJI Mobile SDK, Wireshark (BLE paket analizi için)",
+                        personnel: "Mobil Uygulama Geliştirici (Android), Test Mühendisi"
+                    },
+                    deliverables: "Tam fonksiyonel prototip. Uçuş testlerini, ölçülen performans metriklerini ve sonuçları içeren nihai proje raporu ve video gösterimi.",
+                    risks: [
+                        { id: 'R6.1', text: "BLE bağlantısının gecikmeli veya kararsız olmasından drone kontrolünün tehlikeli hale gelmesi.", mitigation: "BLE bağlantı interval'lerini optimize etmek ve veri paketi boyutunu minimumda tutmak.", level: "high" }
+                    ],
+                    timeline: "20 adam-gün"
+                }
+            }
+        ];
+
+        const phaseContainer = document.getElementById('phase-container');
+        const statusConfig = {
+            completed: { text: 'BAŞARIYLA TAMAMLANDI', colorClass: 'text-emerald-500', dotHTML: '' },
+            'in-progress': { text: 'DEVAM EDİYOR', colorClass: 'text-sky-400', dotHTML: '' },
+            planned: { text: 'PLANLANDI', colorClass: 'text-slate-500', dotHTML: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>' }
+        };
+
+        const detailTabIcons = {
+            wbs: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>',
+            resources: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>',
+            deliverables: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>',
+            risks: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
+            timeline: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>'
+        };
+
+        function renderPhases() {
+            phaseContainer.innerHTML = '';
+            phaseData.forEach((phase, index) => {
+                const config = statusConfig[phase.status];
+                const phaseElement = document.createElement('div');
+                phaseElement.className = `phase ${phase.status}`;
+                phaseElement.dataset.index = index;
+
+                const detailsHTML = `
+                    <div class="phase-details-nav">
+                        <button class="phase-details-tab active" data-tab="wbs">${detailTabIcons.wbs} Görevler</button>
+                        <button class="phase-details-tab" data-tab="resources">${detailTabIcons.resources} Kaynaklar</button>
+                        <button class="phase-details-tab" data-tab="deliverables">${detailTabIcons.deliverables} Çıktılar</button>
+                        <button class="phase-details-tab" data-tab="risks">${detailTabIcons.risks} Riskler</button>
+                        <button class="phase-details-tab" data-tab="timeline">${detailTabIcons.timeline} Zamanlama</button>
+                    </div>
+                    <div class="space-y-4 pt-4">
+                        <div id="wbs-${index}" class="phase-details-content active"><div class="detail-card"><h5>İş Döküm Ağacı (WBS)</h5><ul class="list-disc text-slate-400 space-y-2">${phase.details.wbs.map(item => `<li>${item}</li>`).join('')}</ul></div></div>
+                        <div id="resources-${index}" class="phase-details-content"><div class="grid md:grid-cols-2 gap-4">${Object.entries(phase.details.resources).map(([key, value]) => `<div class="detail-card"><h5 class="capitalize">${key.replace('_', ' ')}</h5><p>${value}</p></div>`).join('')}</div></div>
+                        <div id="deliverables-${index}" class="phase-details-content"><div class="detail-card"><h5>Başarı Kriterleri ve Çıktılar</h5><p>${phase.details.deliverables}</p></div></div>
+                        <div id="risks-${index}" class="phase-details-content"><div class="space-y-4">${phase.details.risks.map(risk => `<div class="detail-card risk-card risk-${risk.level}"><h5>Risk: ${risk.text}</h5><p><strong>Önlem Planı:</strong> ${risk.mitigation}</p></div>`).join('')}</div></div>
+                        <div id="timeline-${index}" class="phase-details-content"><div class="detail-card"><h5>Tahmini Zaman Çizelgesi</h5><p class="text-lg font-semibold">${phase.details.timeline}</p></div></div>
+                    </div>`;
+
+                phaseElement.innerHTML = `
+                    <div class="flex-shrink-0 pt-1"><div class="phase-dot-container"><div class="phase-dot">${config.dotHTML}</div></div></div>
+                    <div class="flex-grow relative min-w-0">
+                        <div class="phase-header" role="button" aria-expanded="false" aria-controls="phase-content-${index}">
+                            <h3 class="font-bold text-lg text-slate-100">${phase.title}</h3>
+                            <span class="phase-status text-sm font-semibold block mt-1 ${config.colorClass}">${config.text}</span>
+                        </div>
+                        <div id="phase-content-${index}" class="phase-content-wrapper bg-slate-800/50 p-4 rounded-xl border border-slate-700">${detailsHTML}</div>
+                        <div class="absolute top-0 right-0 pt-1">
+                            <button class="p-2 rounded-full hover:bg-slate-700 transition-colors phase-settings-btn" aria-label="Faz durumunu değiştir"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></button>
+                            <div class="phase-status-menu hidden absolute right-0 mt-2 w-40 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-10">
+                                <button data-status="completed" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-700">Tamamlandı</button>
+                                <button data-status="in-progress" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-700">Devam Ediyor</button>
+                                <button data-status="planned" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-700">Planlandı</button>
+                            </div>
+                        </div>
+                    </div>`;
+                phaseContainer.appendChild(phaseElement);
+            });
+            renderMathInElement(phaseContainer, { delimiters: [ {left: '$', right: '$', display: false} ], throwOnError : false });
+        }
+
+        phaseContainer.addEventListener('click', (e) => {
+            const phaseElement = e.target.closest('.phase');
+            if (!phaseElement) return;
+
+            if (e.target.closest('.phase-header')) {
+                const currentlyActive = document.querySelector('.phase.active');
+                if (currentlyActive && currentlyActive !== phaseElement) {
+                    currentlyActive.classList.remove('active');
+                }
+                phaseElement.classList.toggle('active');
+                setTimeout(calculateConnectorHeights, 700);
+            }
+            if (e.target.closest('.phase-settings-btn')) {
+                e.stopPropagation();
+                const menu = phaseElement.querySelector('.phase-status-menu');
+                if (menu) menu.classList.toggle('hidden');
+            }
+            if (e.target.closest('.phase-status-menu button')) {
+                const newStatus = e.target.dataset.status;
+                phaseData[phaseElement.dataset.index].status = newStatus;
+                renderPhases();
+                setTimeout(calculateConnectorHeights, 100);
+            }
+            if (e.target.closest('.phase-details-tab')) {
+                const tabName = e.target.dataset.tab;
+                phaseElement.querySelectorAll('.phase-details-tab').forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                phaseElement.querySelectorAll('.phase-details-content').forEach(c => c.classList.remove('active'));
+                const content = phaseElement.querySelector(`#${tabName}-${phaseElement.dataset.index}`);
+                if (content) content.classList.add('active');
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.phase-settings-btn')) {
+                 document.querySelectorAll('.phase-status-menu').forEach(m => m.classList.add('hidden'));
+            }
+        });
+
+        function calculateConnectorHeights() {
+            const phases = document.querySelectorAll('.phase');
+            phases.forEach((phase, index) => {
+                if (index < phases.length - 1) {
+                    const nextPhase = phases[index + 1];
+                    const currentDotRect = phase.querySelector('.phase-dot-container').getBoundingClientRect();
+                    const nextDotRect = nextPhase.querySelector('.phase-dot-container').getBoundingClientRect();
+                    const distance = nextDotRect.top - currentDotRect.bottom;
+                    phase.style.setProperty('--connector-height', `${Math.max(0, distance)}px`);
+                }
+            });
+        }
+
+        renderPhases();
+        setTimeout(calculateConnectorHeights, 100);
+        window.addEventListener('resize', calculateConnectorHeights);
+    });
 
     // Firebase kütüphanelerinden gerekli fonksiyonları içe aktar
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
@@ -81,13 +441,14 @@
             } catch (error) {
                 reject(error);
             }
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
         }
 
         isProcessingQueue = false;
     }
 
     // --- DOM ELEMENTLERİ ---
+    const mainTechContainer = document.getElementById('technical-guides-wrapper');
     const selectionContainer = document.getElementById('selection-container');
     const hardwareGuideContainer = document.getElementById('hardware-guide-container');
     const softwareGuideContainer = document.getElementById('software-guide-container');
@@ -147,6 +508,10 @@
     const loginSubmitBtn = document.getElementById('login-submit-btn');
     const loginCloseBtn = document.getElementById('login-close-btn');
     const loginErrorMsg = document.getElementById('login-error-msg');
+    const mainNavLinks = document.querySelector('.sticky-header nav');
+
+
+
 
     // --- GLOBAL DEĞİŞKENLER ---
     let isAdmin = false;
@@ -155,6 +520,65 @@
     let isErrorState = false;
     let reportHistory = [];
     let personalInfoHistory = [];
+
+
+
+function showGuide(type) {
+    document.getElementById('welcome-screen-container').style.display = 'none';
+    mainTechContainer.style.display = 'block';
+    mainNavLinks.style.display = 'none';
+
+    aiModalOverlay.classList.remove('visible');
+    if (aiInspectorWrapper.parentElement && aiInspectorWrapper.parentElement !== document.body) {
+        document.body.appendChild(aiInspectorWrapper);
+        aiInspectorWrapper.style.display = 'none';
+    }
+
+    // ✅ TÜM CONTAINER'LARI GİZLE (selection-container dahil)
+    [hardwareGuideContainer, softwareGuideContainer, reportGuideContainer,
+     detailsGuideContainer, detailsSelectionContainer, selectionContainer].forEach(c => {
+        if (c) c.style.display = 'none';
+    });
+
+    let guideContainer;
+    switch(type) {
+        case 'hardware':
+            guideContainer = hardwareGuideContainer;
+            mainSubtitle.textContent = 'Donanım Montaj Kılavuzu';
+            document.getElementById('hardware-ai-column').appendChild(aiInspectorWrapper);
+            aiInspectorWrapper.style.display = 'block';
+            backBtnHeader.style.display = 'none';
+            initializeGuide('hardware', hardwareData); // ✅ Direkt initialize
+            break;
+        case 'software':
+            guideContainer = softwareGuideContainer;
+            mainSubtitle.textContent = 'Yazılım Algoritma Kılavuzu';
+            document.getElementById('software-ai-column').appendChild(aiInspectorWrapper);
+            aiInspectorWrapper.style.display = 'block';
+            backBtnHeader.style.display = 'none';
+            initializeGuide('software', softwareData);
+            break;
+        case 'report':
+            guideContainer = reportGuideContainer;
+            mainSubtitle.textContent = 'Komponent Raporu';
+            backBtnHeader.style.display = 'none';
+            renderComponentList(componentList);
+            break;
+        case 'details':
+            guideContainer = detailsGuideContainer;
+            mainSubtitle.textContent = 'Proje Raporu ve Detaylar';
+            showRoom(); // ✅ Direkt içeriğe
+            break;
+    }
+
+    if(guideContainer) {
+        guideContainer.style.display = 'block';
+        window.scrollTo({ top: mainTechContainer.offsetTop - 70, behavior: 'smooth' });
+    }
+
+    homeBtn.style.display = 'block';
+}
+
 
 
 function toggleAdminMode(isAdminState) {
@@ -217,22 +641,22 @@ function toggleAdminMode(isAdminState) {
     // --- FIREBASE FONKSİYONLARI ---
     function loadDataFromFirebase() {
         // Proje raporu yükle
-        onValue(ref(database, 'projectReport'), snapshot => {
+        onValue(ref(database, 'publicContent/projectReport'), snapshot => {
             reportContent.innerHTML = snapshot.val() || 'Rapor içeriği henüz oluşturulmadı...';
         });
 
         // Kişisel bilgiler yükle
-        onValue(ref(database, 'personalInfo'), snapshot => {
+        onValue(ref(database, 'publicContent/personalInfo'), snapshot => {
             personalInfoContent.innerHTML = snapshot.val() || 'Kişisel bilgiler henüz girilmedi...';
         });
 
         // Emeği geçenler yükle
-        onValue(ref(database, 'credits'), snapshot => {
+        onValue(ref(database, 'publicContent/credits'), snapshot => {
             creditsList.innerHTML = snapshot.val() || '';
         });
 
         // Komponent listesi yükle
-        onValue(ref(database, 'components'), snapshot => {
+        onValue(ref(database, 'publicContent/components'), snapshot => {
             const data = snapshot.val();
             if (data && data.list) {
                 componentList = data.list;
@@ -248,7 +672,7 @@ function toggleAdminMode(isAdminState) {
 
     function saveComponentDataToFirebase() {
         if (!isAdmin) return;
-        set(ref(database, 'components'), {
+        set(ref(database, 'publicContent/components'), {
             list: componentList,
             hints: userHints
         });
@@ -707,35 +1131,38 @@ switch (gelen_karakter) {
             }
         }
     });
-    // Ana seçim kartları
-    document.getElementById('select-hardware').addEventListener('click', () => {
-        window.history.pushState({view: 'hardware'}, '', '#hardware');
-        showGuide('hardware');
-    });
-    document.getElementById('select-software').addEventListener('click', () => {
-        window.history.pushState({view: 'software'}, '', '#software');
-        showGuide('software');
-    });
-    document.getElementById('select-report').addEventListener('click', () => {
-        window.history.pushState({view: 'report'}, '', '#report');
-        showGuide('report');
-    });
-    document.getElementById('select-details').addEventListener('click', () => {
-        window.history.pushState({view: 'details'}, '', '#details');
-        showGuide('details');
+
+
+    document.getElementById('mobile-menu').addEventListener('click', (e) => {
+        const menuItem = e.target.closest('.menu-item');
+        if (!menuItem) return;
+
+        const guideType = menuItem.dataset.guide;
+        if (guideType) {
+            window.history.pushState({view: guideType}, '', `#${guideType}`);
+            showGuide(guideType);
+
+            // Menüyü kapat
+            document.body.classList.remove('menu-active');
+            document.getElementById('menu-btn').setAttribute('aria-expanded', 'false');
+        }
     });
 
 
-    // Ana sayfa ve geri dönüş butonları
     homeBtn.addEventListener('click', () => {
-        window.history.pushState({view: 'main'}, '', '#main');
-        // homeBtn'nin kendi orijinal kodu zaten ana menüyü gösteriyor, o yüzden onu çağırıyoruz:
-        selectionContainer.style.display = 'flex';
-        [hardwareGuideContainer, softwareGuideContainer, reportGuideContainer, detailsGuideContainer].forEach(c => c.style.display = 'none');
-        homeBtn.style.display = 'none';
-        backBtnHeader.style.display = 'none';
-        mainSubtitle.textContent = 'Lütfen bir kılavuz seçin';
-        aiModalOverlay.classList.remove('visible');
+        document.getElementById('technical-guides-wrapper').style.display = 'none';
+        document.getElementById('welcome-screen-container').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.querySelector('.header-title').addEventListener('click', (event) => {
+        event.preventDefault();
+
+        // Şimdi, homeBtn ile tamamen aynı olan işlemleri kopyalıyoruz.
+        document.getElementById('technical-guides-wrapper').style.display = 'none';
+        document.getElementById('welcome-screen-container').style.display = 'block';
+        mainNavLinks.style.display = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
     backBtnHeader.addEventListener('click', () => {
@@ -743,56 +1170,7 @@ switch (gelen_karakter) {
     });
 
 
-    // --- ANA KUILAVUZ FONKSİYONU ---
-    function showGuide(type) {
-        selectionContainer.style.display = 'none';
-        homeBtn.style.display = 'block';
-        aiModalOverlay.classList.remove('visible');
 
-        // AI Inspector'ı body'e taşı (eğer başka yerdeyse)
-        if (aiInspectorWrapper.parentElement && aiInspectorWrapper.parentElement !== document.body) {
-            document.body.appendChild(aiInspectorWrapper);
-            aiInspectorWrapper.style.display = 'none';
-        }
-
-        // Tüm kılavuz containerlarını gizle
-        [hardwareGuideContainer, softwareGuideContainer, reportGuideContainer, detailsGuideContainer].forEach(c => c.style.display = 'none');
-
-        let guideContainer;
-        switch(type) {
-            case 'hardware':
-                guideContainer = hardwareGuideContainer;
-                mainSubtitle.textContent = 'Donanım Montaj Kılavuzu';
-                document.getElementById('hardware-ai-column').appendChild(aiInspectorWrapper);
-                aiInspectorWrapper.style.display = 'block';
-                backBtnHeader.style.display = 'none';
-                initializeGuide('hardware', hardwareData);
-                break;
-            case 'software':
-                guideContainer = softwareGuideContainer;
-                mainSubtitle.textContent = 'Yazılım Algoritma Kılavuzu';
-                document.getElementById('software-ai-column').appendChild(aiInspectorWrapper);
-                aiInspectorWrapper.style.display = 'block';
-                backBtnHeader.style.display = 'none';
-                initializeGuide('software', softwareData);
-                break;
-            case 'report':
-                guideContainer = reportGuideContainer;
-                mainSubtitle.textContent = 'Komponent Raporu';
-                backBtnHeader.style.display = 'none';
-                renderComponentList(componentList);
-                break;
-            case 'details':
-                guideContainer = detailsGuideContainer;
-                mainSubtitle.textContent = 'Proje Raporu ve Detaylar';
-                showRoom();
-                break;
-        }
-
-        if(guideContainer) {
-            guideContainer.style.display = 'block';
-        }
-    }
 
     // --- DETAY SAYFALARI ---
     // Detay seçim kartları
@@ -869,7 +1247,7 @@ switch (gelen_karakter) {
             showToast("Hata durumu kaydedilemez.");
             return;
         }
-        set(ref(database, 'projectReport'), reportContent.innerHTML)
+        set(ref(database, 'publicContent/projectReport'), reportContent.innerHTML)
             .then(() => {
                 reportContent.contentEditable = false;
                 reportContent.removeEventListener('input', () => handleContentInput(reportHistory, reportContent, undoReportBtn));
@@ -886,7 +1264,7 @@ switch (gelen_karakter) {
             showToast("Hata durumu kaydedilemez.");
             return;
         }
-        set(ref(database, 'personalInfo'), personalInfoContent.innerHTML)
+        set(ref(database, 'publicContent/personalInfo'), personalInfoContent.innerHTML)
             .then(() => {
                 personalInfoContent.contentEditable = false;
                 personalInfoContent.removeEventListener('input', () => handleContentInput(personalInfoHistory, personalInfoContent, undoPersonalInfoBtn));
@@ -934,7 +1312,7 @@ switch (gelen_karakter) {
         try {
             const result = await addToApiQueue(() => callGemini([{role: 'user', parts: [{text: input}]}], {parts: [{text: systemPrompt}]}, flashApiUrl));
             const updatedCredits = creditsList.innerHTML + result;
-            await set(ref(database, 'credits'), updatedCredits);
+            await set(ref(database, 'publicContent/credits'), updatedCredits);
             creditsList.innerHTML = updatedCredits;
             contributorInput.value = '';
         } catch (e) {
@@ -1241,7 +1619,6 @@ switch (gelen_karakter) {
             hintInput.value = hint;
             wrapper.querySelector('.ai-hint-panel').style.display = 'none';
         } else if (quantityBtn) {
-        e.stopPropagation();
         const action = quantityBtn.dataset.action;
         if (action === 'increase') {
             componentList[index].quantity++;
@@ -1926,3 +2303,32 @@ onAuthStateChanged(auth, (user) => {
 // --- BAŞLANGIÇ AYARLARI ---
 toggleAdminMode(false);
 window.history.replaceState({view: 'main'}, '', '#main');
+
+
+// =================================================================
+// ===          NİHAİ NAVİGASYON YÖNETİM MERKEZİ                 ===
+// =================================================================
+
+// "AEK Projesi" başlığı (.header-title) için merkezi tıklama yöneticisi.
+// Bu kod, ev butonunun tüm davranışlarını birebir taklit eder.
+document.querySelector('.header-title').addEventListener('click', (e) => {
+    // 1. Bağlantının varsayılan davranışını (URL'yi değiştirme) her zaman engelle.
+    e.preventDefault();
+
+    // 2. İlgili ana ekran konteynerlerini bul.
+    const welcomeContainer = document.getElementById('welcome-screen-container');
+    const techGuidesContainer = document.getElementById('technical-guides-wrapper');
+
+    // 3. Her zaman teknik kılavuzlar ekranını gizle.
+    if (techGuidesContainer) {
+        techGuidesContainer.style.display = 'none';
+    }
+
+    // 4. Her zaman ana panel (dashboard) ekranını göster.
+    if (welcomeContainer) {
+        welcomeContainer.style.display = 'block';
+    }
+
+    // 5. Her zaman sayfanın en üstüne, akıcı bir şekilde kaydır.
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
