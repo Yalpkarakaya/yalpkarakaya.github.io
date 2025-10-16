@@ -1,3 +1,4 @@
+
     document.addEventListener('DOMContentLoaded', function () {
         renderMathInElement(document.body, {
             delimiters: [
@@ -358,7 +359,9 @@
         setTimeout(calculateConnectorHeights, 100);
         window.addEventListener('resize', calculateConnectorHeights);
     });
-
+  
+    
+    
     // Firebase kütüphanelerinden gerekli fonksiyonları içe aktar
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
