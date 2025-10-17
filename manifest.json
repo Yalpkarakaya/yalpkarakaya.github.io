@@ -1,0 +1,20 @@
+{
+  "name": "AEK Projesi - Akıllı Eldiven Kontrolcüsü",
+  "short_name": "AEK Projesi",
+  "description": "DJI drone'lar için el hareketleriyle sezgisel kontrol sağlayan akıllı eldiven",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0ea5e9",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["technology", "education", "productivity"],
+  "lang": "tr",
+  "dir": "ltr"
+}
