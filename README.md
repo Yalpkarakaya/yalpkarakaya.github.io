@@ -45,11 +45,24 @@ DJI drone'lar için el hareketleriyle sezgisel, düşük gecikmeli ve yüksek ha
    cd ..
    ```
 
-3. **Environment Variables Ayarlayın**
+3. **API Anahtarlarını Yapılandırın** (KRİTİK!)
+   
+   **Otomatik (Önerilen):**
    ```bash
-   # Firebase Console > Functions > Configuration
-   firebase functions:config:set gemini.api_keys='["YOUR_KEY_1","YOUR_KEY_2"]'
+   ./setup-firebase-keys.sh
    ```
+   
+   **Manuel:**
+   ```bash
+   # Production
+   firebase functions:config:set gemini.api_keys='["KEY1","KEY2","KEY3"]'
+   
+   # Yerel geliştirme
+   cd functions && cp .env.example .env
+   # .env dosyasını düzenleyin
+   ```
+   
+   **📖 Detaylı rehber**: `SETUP-API-KEYS.md`
 
 4. **Firebase'e Deploy**
    ```bash
@@ -59,19 +72,38 @@ DJI drone'lar için el hareketleriyle sezgisel, düşük gecikmeli ve yüksek ha
 
 ## 🔐 Güvenlik Uyarıları
 
-### ⚠️ API Anahtarları
+### ⚠️ API Anahtarları - KRİTİK!
 
-**ÖNEMLİ**: API anahtarlarınızı asla public repository'ye commit etmeyin!
+**🔴 ÖNEMLİ**: API anahtarları KODDAN TAMAMEN KALDIRILMIŞTIR!
 
-1. Firebase Console'dan environment variables kullanın:
-   ```bash
-   firebase functions:config:set gemini.api_keys='["key1","key2"]'
-   ```
+Proje artık **SADECE** environment variables ile çalışır. API anahtarlarınızı yapılandırmak için:
 
-2. Veya `.env` dosyası oluşturun (`.gitignore`'a eklenmiş):
-   ```env
-   GEMINI_API_KEYS=["AIzaSy...","AIzaSy..."]
-   ```
+#### Otomatik Kurulum (Önerilen) 🚀
+
+```bash
+# Setup script'i çalıştırın
+./setup-firebase-keys.sh
+
+# Anahtarlarınızı girin ve deploy edin
+firebase deploy --only functions
+```
+
+#### Manuel Kurulum
+
+**Production için (Firebase):**
+```bash
+firebase functions:config:set gemini.api_keys='["KEY1","KEY2","KEY3","KEY4","KEY5","KEY6"]'
+firebase deploy --only functions
+```
+
+**Yerel geliştirme için (.env):**
+```bash
+cd functions
+cp .env.example .env
+# .env dosyasını açıp gerçek anahtarlarınızı ekleyin
+```
+
+**📖 Detaylı Kurulum Rehberi**: `SETUP-API-KEYS.md` dosyasına bakın
 
 ## 📁 Proje Yapısı
 

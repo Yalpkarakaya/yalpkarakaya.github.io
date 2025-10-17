@@ -4,20 +4,42 @@
 
 ### API Anahtarları
 
-1. **Asla public repository'ye commit etmeyin**
-   - API anahtarları `.env` dosyasında tutulmalı
-   - `.env` dosyası `.gitignore`'a eklenmiş olmalı
-   - Production ortamında Firebase Environment Variables kullanın
+**🔴 KRİTİK DEĞİŞİKLİK**: API anahtarları artık KODDA BULUNMUYOR!
 
-2. **Environment Variables Kullanımı**
-   ```bash
-   # Firebase Console kullanarak
-   firebase functions:config:set gemini.api_keys='["key1","key2"]'
-   
-   # Lokal geliştirme için .env dosyası
-   cp .env.example .env
-   # Sonra .env dosyasına gerçek anahtarları girin
-   ```
+#### Güvenli Yapılandırma
+
+**1. Otomatik Kurulum (Önerilen)**
+```bash
+./setup-firebase-keys.sh
+# Script sizden anahtarları isteyecek ve güvenli şekilde Firebase'e yükleyecek
+```
+
+**2. Manuel Kurulum**
+
+**Production (Firebase):**
+```bash
+firebase functions:config:set gemini.api_keys='["KEY1","KEY2","KEY3","KEY4","KEY5","KEY6"]'
+firebase deploy --only functions
+```
+
+**Yerel Geliştirme (.env):**
+```bash
+cd functions
+cp .env.example .env
+# .env dosyasını açıp GEMINI_API_KEYS değişkenine anahtarlarınızı ekleyin
+```
+
+#### Doğrulama
+
+```bash
+# Firebase config'i kontrol edin
+firebase functions:config:get gemini.api_keys
+
+# Yerel .env'yi test edin
+cd functions && firebase emulators:start
+```
+
+**📖 Tam Dokümantasyon**: `SETUP-API-KEYS.md` dosyasına bakın
 
 3. **API Anahtarı Rotasyonu**
    - Düzenli olarak API anahtarlarınızı yenileyin

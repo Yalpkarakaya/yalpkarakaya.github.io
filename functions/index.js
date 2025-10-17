@@ -2,23 +2,33 @@ const functions = require("firebase-functions");
 const fetch = require("node-fetch");
 const cors = require("cors")({origin: true});
 
-// ⚠️ GÜVENLİK UYARISI: API anahtarlarını environment variables'a taşıyın!
-// Firebase Console > Functions > Configuration > Environment variables
-// Örnek kullanım: process.env.GEMINI_API_KEYS (JSON string olarak)
-// 
-// Şimdilik geçici olarak burada, ancak MUTLAKA değiştirin!
-// Bu anahtarlar public repository'de SAKLANMAMALI!
-const apiKeys = process.env.GEMINI_API_KEYS 
-  ? JSON.parse(process.env.GEMINI_API_KEYS)
-  : [
-      // ⚠️ UYARI: Bu anahtarları GİZLİ tutun ve .env kullanın!
-      'AIzaSyAGQ_o5-p4m1OEaWYRHwjQZ30oOpKRrAw8',
-      'AIzaSyBmX9hT1HQ4iD8u8fueHoyLFEuBkI5gY-c',
-      'AIzaSyDjZ2MhrMV5wsXo-Fh-Fr7V3sO-R2AAwAM',
-      'AIzaSyDMI1kFaZOD15NdavWCBm2O_oBFNCWAS5c',
-      'AIzaSyDc_aS2n97yAOXRFxBZ-W5oLM9QR5d3yco',
-      'AIzaSyDzaNQeSYcRMjfiNbxFkp3ST7lTqTBLXH8',
-    ];
+// 🔐 API Anahtarları - SADECE Environment Variables'dan okunur
+// Firebase Console > Functions > Configuration
+// VEYA yerel geliştirme için .env dosyası
+const apiKeys = (() => {
+  // Firebase environment config'den oku
+  const firebaseConfig = functions.config().gemini?.api_keys;
+  if (firebaseConfig) {
+    return Array.isArray(firebaseConfig) ? firebaseConfig : [firebaseConfig];
+  }
+  
+  // Yerel geliştirme için process.env'den oku
+  if (process.env.GEMINI_API_KEYS) {
+    try {
+      return JSON.parse(process.env.GEMINI_API_KEYS);
+    } catch (error) {
+      console.error("Error parsing GEMINI_API_KEYS:", error);
+      return [];
+    }
+  }
+  
+  // Hiç anahtar yoksa hata fırlat
+  console.error("🔴 FATAL: No API keys configured!");
+  console.error("Please set API keys using one of these methods:");
+  console.error("1. Firebase: firebase functions:config:set gemini.api_keys='[\"key1\",\"key2\"]'");
+  console.error("2. Local: Add GEMINI_API_KEYS to .env file");
+  return [];
+})();
 
 // 2. Anahtar döndürme mantığı da burada. Rastgele seçim yapacağız.
 function getNextApiKey() {

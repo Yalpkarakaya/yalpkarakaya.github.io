@@ -1,6 +1,32 @@
 # Değişiklik Geçmişi
 
-## [2025-10-17] - Acil Güvenlik ve Performans Güncellemesi
+## [2025-10-17] - v2.0.0 - API Keys Tamamen Kaldırıldı 🔒
+
+### 🔴 BREAKING CHANGE: API Anahtarları Koddan Kaldırıldı
+
+**ÖNEMLİ**: Bu güncelleme ile API anahtarları tamamen koddan kaldırılmıştır. 
+Proje artık SADECE environment variables ile çalışır.
+
+#### Yeni Özellikler
+- ✅ API anahtarları artık sadece environment variables'dan okunur
+- ✅ Otomatik setup scripti eklendi (`setup-firebase-keys.sh`)
+- ✅ Detaylı kurulum rehberi (`SETUP-API-KEYS.md`)
+- ✅ functions/.env.example eklendi
+- ✅ functions/.gitignore güncellendi
+
+#### Migration Adımları
+```bash
+# Otomatik
+./setup-firebase-keys.sh
+
+# Manuel
+firebase functions:config:set gemini.api_keys='["KEY1","KEY2"]'
+firebase deploy --only functions
+```
+
+---
+
+## [2025-10-17] - v1.0.0 - Acil Güvenlik ve Performans Güncellemesi
 
 ### 🔴 Kritik Güvenlik Düzeltmeleri
 

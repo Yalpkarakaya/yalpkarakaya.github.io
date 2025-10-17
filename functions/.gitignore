@@ -1,2 +1,49 @@
+# Compiled JavaScript files
+lib/
+*.js.map
+
+# Node.js
 node_modules/
-*.local
+npm-debug.log
+yarn-error.log
+
+# Environment Variables - ASLA COMMIT ETMEYİN!
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# API Keys & Credentials
+*-key.json
+serviceAccountKey.json
+credentials.json
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
