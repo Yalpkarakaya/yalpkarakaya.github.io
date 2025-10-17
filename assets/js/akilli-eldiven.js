@@ -2274,11 +2274,801 @@ loginEmailInput.addEventListener('keydown', (event) => {
 loginPasswordInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         event.preventDefault(); // Varsayılan Enter davranışını engelle
-        loginSubmitBtn.click(); // Giriş yap butonunun click olayını tetikle
+        loginSubmitB    // 5. Her zaman sayfanın en üstüne, akıcı bir şekilde kaydır.
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// =================================================================
+// ===                    PWA ve MOBİL DESTEĞİ                    ===
+// =================================================================
+
+// PWA Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('Service Worker registered successfully:', registration);
+                
+                // Check for updates
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdateNotification();
+                        }
+                    });
+                });
+            })
+            .catch(error => {
+                console.log('Service Worker registration failed:', error);
+            });
+    });
+}
+
+// PWA Install Prompt
+let deferredPrompt;
+let installPromptShown = false;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    console.log('PWA install prompt triggered');
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Show custom install prompt after 5 seconds
+    if (!installPromptShown) {
+        setTimeout(() => {
+            showInstallPrompt();
+        }, 5000);
     }
 });
 
-// 4. Kimlik Durumu Dinleyicisi (Uygulamanın Kalbi)
+// PWA Install Event
+window.addEventListener('appinstalled', () => {
+    console.log('PWA installed successfully');
+    hideInstallPrompt();
+    showNotification('Uygulama başarıyla yüklendi!', 'success');
+});
+
+// Online/Offline Status
+window.addEventListener('online', () => {
+    console.log('App is online');
+    hideOfflineIndicator();
+    showNotification('Bağlantı yeniden kuruldu', 'success');
+});
+
+window.addEventListener('offline', () => {
+    console.log('App is offline');
+    showOfflineIndicator();
+    showNotification('Çevrimdışı modda çalışıyorsunuz', 'warning');
+});
+
+// =================================================================
+// ===                    TOUCH GESTURE HANDLERS                   ===
+// =================================================================
+
+class TouchGestureHandler {
+    constructor(element, options = {}) {
+        this.element = element;
+        this.startX = 0;
+        this.startY = 0;
+        this.currentX = 0;
+        this.currentY = 0;
+        this.isDragging = false;
+        this.threshold = options.threshold || 50;
+        this.onSwipeLeft = options.onSwipeLeft || (() => {});
+        this.onSwipeRight = options.onSwipeRight || (() => {});
+        this.onSwipeUp = options.onSwipeUp || (() => {});
+        this.onSwipeDown = options.onSwipeDown || (() => {});
+        this.onTap = options.onTap || (() => {});
+        this.onLongPress = options.onLongPress || (() => {});
+        this.longPressTimer = null;
+        this.longPressDelay = options.longPressDelay || 500;
+        
+        this.init();
+    }
+    
+    init() {
+        this.element.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
+        this.element.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
+        this.element.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
+        this.element.addEventListener('touchcancel', this.handleTouchCancel.bind(this), { passive: false });
+    }
+    
+    handleTouchStart(e) {
+        const touch = e.touches[0];
+        this.startX = touch.clientX;
+        this.startY = touch.clientY;
+        this.currentX = touch.clientX;
+        this.currentY = touch.clientY;
+        this.isDragging = false;
+        
+        // Long press detection
+        this.longPressTimer = setTimeout(() => {
+            this.onLongPress(e);
+        }, this.longPressDelay);
+    }
+    
+    handleTouchMove(e) {
+        if (e.touches.length > 1) return;
+        
+        const touch = e.touches[0];
+        this.currentX = touch.clientX;
+        this.currentY = touch.clientY;
+        
+        const deltaX = this.currentX - this.startX;
+        const deltaY = this.currentY - this.startY;
+        
+        if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
+            this.isDragging = true;
+            clearTimeout(this.longPressTimer);
+        }
+        
+        // Prevent default scrolling during horizontal swipe
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            e.preventDefault();
+        }
+    }
+    
+    handleTouchEnd(e) {
+        clearTimeout(this.longPressTimer);
+        
+        if (!this.isDragging) {
+            this.onTap(e);
+            return;
+        }
+        
+        const deltaX = this.currentX - this.startX;
+        const deltaY = this.currentY - this.startY;
+        
+        if (Math.abs(deltaX) > this.threshold || Math.abs(deltaY) > this.threshold) {
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Horizontal swipe
+                if (deltaX > 0) {
+                    this.onSwipeRight(e);
+                } else {
+                    this.onSwipeLeft(e);
+                }
+            } else {
+                // Vertical swipe
+                if (deltaY > 0) {
+                    this.onSwipeDown(e);
+                } else {
+                    this.onSwipeUp(e);
+                }
+            }
+        }
+    }
+    
+    handleTouchCancel(e) {
+        clearTimeout(this.longPressTimer);
+        this.isDragging = false;
+    }
+    
+    destroy() {
+        this.element.removeEventListener('touchstart', this.handleTouchStart);
+        this.element.removeEventListener('touchmove', this.handleTouchMove);
+        this.element.removeEventListener('touchend', this.handleTouchEnd);
+        this.element.removeEventListener('touchcancel', this.handleTouchCancel);
+    }
+}
+
+// Enhanced Swipe-to-Delete for Component List
+function enhanceSwipeToDelete() {
+    const componentItems = document.querySelectorAll('#component-list li');
+    
+    componentItems.forEach(item => {
+        new TouchGestureHandler(item, {
+            threshold: 100,
+            onSwipeLeft: (e) => {
+                if (item.querySelector('.delete-swipe-bar')) {
+                    item.classList.add('swiping');
+                    item.style.transform = 'translateX(-100px)';
+                }
+            },
+            onSwipeRight: (e) => {
+                item.classList.remove('swiping');
+                item.style.transform = 'translateX(0)';
+            },
+            onTap: (e) => {
+                if (item.classList.contains('swiping')) {
+                    item.classList.remove('swiping');
+                    item.style.transform = 'translateX(0)';
+                }
+            }
+        });
+    });
+}
+
+// =================================================================
+// ===                    PWA UI FUNCTIONS                        ===
+// =================================================================
+
+function showInstallPrompt() {
+    if (installPromptShown) return;
+    
+    const prompt = document.getElementById('pwa-install-prompt');
+    if (prompt) {
+        prompt.style.display = 'block';
+        installPromptShown = true;
+        
+        // Auto-hide after 10 seconds
+        setTimeout(() => {
+            hideInstallPrompt();
+        }, 10000);
+    }
+}
+
+function hideInstallPrompt() {
+    const prompt = document.getElementById('pwa-install-prompt');
+    if (prompt) {
+        prompt.style.display = 'none';
+    }
+}
+
+function showOfflineIndicator() {
+    const indicator = document.getElementById('offline-indicator');
+    if (indicator) {
+        indicator.style.display = 'block';
+    }
+}
+
+function hideOfflineIndicator() {
+    const indicator = document.getElementById('offline-indicator');
+    if (indicator) {
+        indicator.style.display = 'none';
+    }
+}
+
+function showUpdateNotification() {
+    showNotification('Yeni güncelleme mevcut! Sayfayı yenileyin.', 'info', {
+        duration: 0,
+        actions: [
+            {
+                text: 'Yenile',
+                action: () => window.location.reload()
+            }
+        ]
+    });
+}
+
+function showNotification(message, type = 'info', options = {}) {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span>${message}</span>
+            ${options.actions ? `
+                <div class="notification-actions">
+                    ${options.actions.map(action => 
+                        `<button class="notification-action-btn">${action.text}</button>`
+                    ).join('')}
+                </div>
+            ` : ''}
+        </div>
+    `;
+    
+    // Add styles
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#fbbf24' : type === 'error' ? '#ef4444' : '#0ea5e9'};
+        color: white;
+        padding: 16px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 10000;
+        max-width: 300px;
+        animation: slideInRight 0.3s ease-out;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Add action listeners
+    if (options.actions) {
+        notification.querySelectorAll('.notification-action-btn').forEach((btn, index) => {
+            btn.addEventListener('click', options.actions[index].action);
+        });
+    }
+    
+    // Auto-remove
+    const duration = options.duration || 3000;
+    if (duration > 0) {
+        setTimeout(() => {
+            notification.style.animation = 'slideOutRight 0.3s ease-out';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, duration);
+    }
+}
+
+// =================================================================
+// ===                    LOADING SCREEN                          ===
+// =================================================================
+
+function showLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.style.display = 'flex';
+    }
+}
+
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 500);
+    }
+}
+
+// =================================================================
+// ===                    ENHANCED SEARCH                          ===
+// =================================================================
+
+class EnhancedSearch {
+    constructor() {
+        this.searchInput = null;
+        this.searchResults = null;
+        this.searchIndex = [];
+        this.debounceTimer = null;
+        this.init();
+    }
+    
+    init() {
+        this.createSearchInterface();
+        this.buildSearchIndex();
+        this.bindEvents();
+    }
+    
+    createSearchInterface() {
+        // Add search input to header
+        const header = document.querySelector('.nav-container');
+        if (header && !document.getElementById('search-container')) {
+            const searchContainer = document.createElement('div');
+            searchContainer.id = 'search-container';
+            searchContainer.className = 'search-container';
+            searchContainer.innerHTML = `
+                <div class="search-input-wrapper">
+                    <input type="text" id="search-input" placeholder="Ara..." class="search-input">
+                    <button id="search-clear" class="search-clear" style="display: none;">×</button>
+                </div>
+                <div id="search-results" class="search-results"></div>
+            `;
+            
+            header.appendChild(searchContainer);
+            
+            this.searchInput = document.getElementById('search-input');
+            this.searchResults = document.getElementById('search-results');
+        }
+    }
+    
+    buildSearchIndex() {
+        // Index all searchable content
+        const searchableElements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, li, .card, .stat-card');
+        
+        this.searchIndex = Array.from(searchableElements).map((element, index) => ({
+            id: index,
+            element: element,
+            text: element.textContent.toLowerCase().trim(),
+            title: element.tagName.match(/^H[1-6]$/) ? element.textContent : '',
+            type: element.tagName.toLowerCase(),
+            section: this.getSectionName(element)
+        })).filter(item => item.text.length > 10);
+    }
+    
+    getSectionName(element) {
+        const section = element.closest('section');
+        if (section) {
+            const sectionTitle = section.querySelector('h1, h2, h3');
+            return sectionTitle ? sectionTitle.textContent : 'Genel';
+        }
+        return 'Genel';
+    }
+    
+    bindEvents() {
+        if (this.searchInput) {
+            this.searchInput.addEventListener('input', this.handleSearch.bind(this));
+            this.searchInput.addEventListener('focus', this.showResults.bind(this));
+            this.searchInput.addEventListener('blur', this.hideResults.bind(this));
+        }
+        
+        if (document.getElementById('search-clear')) {
+            document.getElementById('search-clear').addEventListener('click', this.clearSearch.bind(this));
+        }
+    }
+    
+    handleSearch(e) {
+        const query = e.target.value.toLowerCase().trim();
+        
+        clearTimeout(this.debounceTimer);
+        this.debounceTimer = setTimeout(() => {
+            if (query.length < 2) {
+                this.hideResults();
+                return;
+            }
+            
+            const results = this.search(query);
+            this.displayResults(results);
+            this.showResults();
+        }, 300);
+    }
+    
+    search(query) {
+        return this.searchIndex.filter(item => 
+            item.text.includes(query) || 
+            item.title.toLowerCase().includes(query)
+        ).slice(0, 10);
+    }
+    
+    displayResults(results) {
+        if (!this.searchResults) return;
+        
+        if (results.length === 0) {
+            this.searchResults.innerHTML = '<div class="search-no-results">Sonuç bulunamadı</div>';
+            return;
+        }
+        
+        this.searchResults.innerHTML = results.map(result => `
+            <div class="search-result-item" data-target="${result.id}">
+                <div class="search-result-title">${result.title || result.text.substring(0, 50)}...</div>
+                <div class="search-result-section">${result.section}</div>
+                <div class="search-result-preview">${this.highlightQuery(result.text, this.searchInput.value)}</div>
+            </div>
+        `).join('');
+        
+        // Add click handlers
+        this.searchResults.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const targetId = item.dataset.target;
+                const targetElement = this.searchIndex[targetId].element;
+                this.scrollToElement(targetElement);
+                this.hideResults();
+                this.searchInput.blur();
+            });
+        });
+    }
+    
+    highlightQuery(text, query) {
+        if (!query) return text;
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<mark>$1</mark>');
+    }
+    
+    scrollToElement(element) {
+        element.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+        });
+        
+        // Highlight element
+        element.style.backgroundColor = 'rgba(14, 165, 233, 0.2)';
+        setTimeout(() => {
+            element.style.backgroundColor = '';
+        }, 2000);
+    }
+    
+    showResults() {
+        if (this.searchResults) {
+            this.searchResults.style.display = 'block';
+        }
+        if (document.getElementById('search-clear')) {
+            document.getElementById('search-clear').style.display = 'block';
+        }
+    }
+    
+    hideResults() {
+        setTimeout(() => {
+            if (this.searchResults) {
+                this.searchResults.style.display = 'none';
+            }
+        }, 200);
+    }
+    
+    clearSearch() {
+        if (this.searchInput) {
+            this.searchInput.value = '';
+            this.hideResults();
+        }
+        if (document.getElementById('search-clear')) {
+            document.getElementById('search-clear').style.display = 'none';
+        }
+    }
+}
+
+// =================================================================
+// ===                    EXPORT/IMPORT FUNCTIONS                 ===
+// =================================================================
+
+class DataExporter {
+    static exportToCSV(data, filename = 'aek-data.csv') {
+        const csv = this.convertToCSV(data);
+        this.downloadFile(csv, filename, 'text/csv');
+    }
+    
+    static exportToJSON(data, filename = 'aek-data.json') {
+        const json = JSON.stringify(data, null, 2);
+        this.downloadFile(json, filename, 'application/json');
+    }
+    
+    static exportToPDF(elementId, filename = 'aek-raporu.pdf') {
+        // This would require html2pdf library
+        console.log('PDF export requires html2pdf library');
+    }
+    
+    static convertToCSV(data) {
+        if (!Array.isArray(data) || data.length === 0) return '';
+        
+        const headers = Object.keys(data[0]);
+        const csvContent = [
+            headers.join(','),
+            ...data.map(row => 
+                headers.map(header => 
+                    `"${String(row[header] || '').replace(/"/g, '""')}"`
+                ).join(',')
+            )
+        ].join('\n');
+        
+        return csvContent;
+    }
+    
+    static downloadFile(content, filename, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        URL.revokeObjectURL(url);
+    }
+}
+
+class DataImporter {
+    static importFromFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                try {
+                    const content = e.target.result;
+                    const extension = file.name.split('.').pop().toLowerCase();
+                    
+                    let data;
+                    if (extension === 'json') {
+                        data = JSON.parse(content);
+                    } else if (extension === 'csv') {
+                        data = this.parseCSV(content);
+                    } else {
+                        throw new Error('Desteklenmeyen dosya formatı');
+                    }
+                    
+                    resolve(data);
+                } catch (error) {
+                    reject(error);
+                }
+            };
+            
+            reader.onerror = () => reject(new Error('Dosya okunamadı'));
+            reader.readAsText(file);
+        });
+    }
+    
+    static parseCSV(csv) {
+        const lines = csv.split('\n');
+        const headers = lines[0].split(',').map(h => h.replace(/"/g, ''));
+        
+        return lines.slice(1).map(line => {
+            const values = line.split(',').map(v => v.replace(/"/g, ''));
+            const obj = {};
+            headers.forEach((header, index) => {
+                obj[header] = values[index] || '';
+            });
+            return obj;
+        });
+    }
+}
+
+// =================================================================
+// ===                    SECURITY ENHANCEMENTS                   ===
+// =================================================================
+
+class SecurityManager {
+    static sanitizeHTML(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+    
+    static validateEmail(email) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+    
+    static validatePassword(password) {
+        return password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password);
+    }
+    
+    static validateInput(input, type) {
+        switch (type) {
+            case 'email':
+                return this.validateEmail(input);
+            case 'password':
+                return this.validatePassword(input);
+            case 'text':
+                return input.trim().length > 0;
+            case 'number':
+                return !isNaN(input) && input !== '';
+            default:
+                return true;
+        }
+    }
+    
+    static escapeHTML(str) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return str.replace(/[&<>"']/g, m => map[m]);
+    }
+}
+
+// =================================================================
+// ===                    INITIALIZATION                          ===
+// =================================================================
+
+// Initialize PWA features
+document.addEventListener('DOMContentLoaded', () => {
+    // Show loading screen
+    showLoadingScreen();
+    
+    // Initialize enhanced search
+    new EnhancedSearch();
+    
+    // Initialize touch gestures
+    enhanceSwipeToDelete();
+    
+    // Add PWA install button handlers
+    const installBtn = document.getElementById('pwa-install-btn');
+    const dismissBtn = document.getElementById('pwa-install-dismiss');
+    
+    if (installBtn) {
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+            }
+            hideInstallPrompt();
+        });
+    }
+    
+    if (dismissBtn) {
+        dismissBtn.addEventListener('click', hideInstallPrompt);
+    }
+    
+    // Hide loading screen after everything is loaded
+    setTimeout(() => {
+        hideLoadingScreen();
+    }, 1000);
+    
+    // Check if app is already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        console.log('App is running in standalone mode');
+    }
+    
+    // Add CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        .search-container {
+            position: relative;
+            margin-left: 1rem;
+        }
+        
+        .search-input-wrapper {
+            position: relative;
+        }
+        
+        .search-input {
+            background: var(--slate-800);
+            border: 1px solid var(--slate-600);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--slate-100);
+            width: 200px;
+        }
+        
+        .search-clear {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--slate-400);
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--slate-800);
+            border: 1px solid var(--slate-700);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .search-result-item {
+            padding: 12px;
+            border-bottom: 1px solid var(--slate-700);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-result-item:hover {
+            background: var(--slate-700);
+        }
+        
+        .search-result-title {
+            font-weight: 600;
+            color: var(--slate-100);
+            margin-bottom: 4px;
+        }
+        
+        .search-result-section {
+            font-size: 0.8rem;
+            color: var(--sky-400);
+            margin-bottom: 4px;
+        }
+        
+        .search-result-preview {
+            font-size: 0.9rem;
+            color: var(--slate-400);
+        }
+        
+        .search-result-preview mark {
+            background: var(--amber-400);
+            color: var(--slate-900);
+            padding: 1px 2px;
+            border-radius: 2px;
+        }
+        
+        .search-no-results {
+            padding: 20px;
+            text-align: center;
+            color: var(--slate-400);
+        }
+    `;
+    document.head.appendChild(style);
+});)
 onAuthStateChanged(auth, (user) => {
     if (user) {
         // Bir kullanıcı giriş yapmış (Admin veya Anonim)
