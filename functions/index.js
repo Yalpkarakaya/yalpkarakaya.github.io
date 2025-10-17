@@ -7,8 +7,9 @@ const cors = require("cors")({origin: true});
 // VEYA yerel geliştirme için .env dosyası
 const apiKeys = (() => {
   // Firebase environment config'den oku
-  const firebaseConfig = functions.config().gemini?.api_keys;
-  if (firebaseConfig) {
+  const geminiConfig = functions.config().gemini;
+  if (geminiConfig && geminiConfig.api_keys) {
+    const firebaseConfig = geminiConfig.api_keys;
     return Array.isArray(firebaseConfig) ?
       firebaseConfig : [firebaseConfig];
   }
