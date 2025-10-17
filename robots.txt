@@ -1,0 +1,19 @@
+# Robots.txt - AEK Projesi
+# https://akilli-eldiven-proje.web.app/robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap konumu
+Sitemap: https://akilli-eldiven-proje.web.app/sitemap.xml
+
+# İndekslenmesini istemediğimiz alanlar
+Disallow: /functions/
+Disallow: /_includes/
+Disallow: /_layouts/
+Disallow: /.git/
+Disallow: /firebase.json
+Disallow: /.env
+
+# Crawl hızı (saniye)
+Crawl-delay: 1
