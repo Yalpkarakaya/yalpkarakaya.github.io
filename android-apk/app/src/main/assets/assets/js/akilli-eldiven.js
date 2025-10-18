@@ -1,3 +1,4 @@
+let phaseData = [];
 
     document.addEventListener('DOMContentLoaded', function () {
         // Loading screen gizle
@@ -143,7 +144,7 @@
         document.querySelectorAll('.animated-section').forEach(section => animationObserver.observe(section));
 
         // --- YOL HARİTASI (FAZLAR) BÖLÜMÜ ---
-        let phaseData = [
+        phaseData = [
             {
                 title: 'Faz 1: Donanım ve Pasif Sistem Karakterizasyonu', status: 'completed',
                 details: {
@@ -328,6 +329,7 @@
             });
             renderMathInElement(phaseContainer, { delimiters: [ {left: '$', right: '$', display: false} ], throwOnError : false });
         }
+        if (typeof window !== 'undefined') { window.renderPhases = renderPhases; }
 
         phaseContainer.addEventListener('click', (e) => {
             const phaseElement = e.target.closest('.phase');
@@ -384,6 +386,7 @@
                 }
             });
         }
+        if (typeof window !== 'undefined') { window.calculateConnectorHeights = calculateConnectorHeights; }
 
         renderPhases();
         setTimeout(calculateConnectorHeights, 100);
