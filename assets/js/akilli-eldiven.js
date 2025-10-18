@@ -1,5 +1,15 @@
 
     document.addEventListener('DOMContentLoaded', function () {
+        // Admin giriş butonu eksikse oluştur (merkezî konum: sol alt)
+        if (!document.getElementById('admin-login-btn')) {
+            const adminBtn = document.createElement('button');
+            adminBtn.id = 'admin-login-btn';
+            adminBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                <span>Proje Sahibi Girişi</span>
+            `;
+            document.body.appendChild(adminBtn);
+        }
         renderMathInElement(document.body, {
             delimiters: [
                 {left: '$', right: '$', display: false}
