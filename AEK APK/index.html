@@ -1,0 +1,2377 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>AEK Projesi - Geliştirilmiş Gösterge Paneli</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="DJI drone kontrolü için akıllı eldiven projesi - Gelişmiş gösterge paneli ve proje yönetimi">
+    <meta name="keywords" content="akıllı eldiven, drone kontrolü, DJI, proje yönetimi, gösterge paneli">
+    <meta name="author" content="AEK Projesi">
+    <meta name="theme-color" content="#0ea5e9">
+    <meta name="msapplication-TileColor" content="#0ea5e9">
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json?v=20251018">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    
+    <!-- Apple Web App Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AEK Dashboard">
+    
+    <!-- Microsoft Tiles (disabled until icons are provided) -->
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="AEK Projesi - Akıllı Eldiven Dashboard">
+    <meta property="og:description" content="DJI drone kontrolü için akıllı eldiven projesi - Gelişmiş gösterge paneli">
+    <meta property="og:image" content="/icons/icon-512x512.png">
+    <meta property="og:url" content="/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AEK Projesi">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AEK Projesi - Akıllı Eldiven Dashboard">
+    <meta name="twitter:description" content="DJI drone kontrolü için akıllı eldiven projesi - Gelişmiş gösterge paneli">
+    <meta name="twitter:image" content="/icons/icon-512x512.png">
+    
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <!-- DNS Prefetch for External Resources -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <!-- Built Tailwind CSS -->
+    
+<style>
+*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.18 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width:640px){.container{max-width:640px}}@media (min-width:768px){.container{max-width:768px}}@media (min-width:1024px){.container{max-width:1024px}}@media (min-width:1280px){.container{max-width:1280px}}@media (min-width:1536px){.container{max-width:1536px}}.visible{visibility:visible}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.right-0{right:0}.top-0{top:0}.z-10{z-index:10}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-12{margin-bottom:3rem}.mb-16{margin-bottom:4rem}.mb-2{margin-bottom:.5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mt-1{margin-top:.25rem}.mt-12{margin-top:3rem}.mt-2{margin-top:.5rem}.mt-4{margin-top:1rem}.mt-8{margin-top:2rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.table{display:table}.grid{display:grid}.contents{display:contents}.hidden{display:none}.h-2\.5{height:.625rem}.h-64{height:16rem}.h-80{height:20rem}.h-full{height:100%}.w-40{width:10rem}.w-full{width:100%}.min-w-0{min-width:0}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.flex-grow{flex-grow:1}.border-collapse{border-collapse:collapse}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.resize{resize:both}.list-disc{list-style-type:disc}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.gap-0{gap:0}.gap-12{gap:3rem}.gap-4{gap:1rem}.gap-8{gap:2rem}.space-x-4>:not([hidden])~:not([hidden]){--tw-space-x-reverse:0;margin-right:calc(1rem*var(--tw-space-x-reverse));margin-left:calc(1rem*(1 - var(--tw-space-x-reverse)))}.space-y-2>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.5rem*var(--tw-space-y-reverse))}.space-y-4>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem*var(--tw-space-y-reverse))}.self-center{align-self:center}.overflow-x-auto{overflow-x:auto}.scroll-smooth{scroll-behavior:smooth}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85/var(--tw-border-opacity,1))}.bg-amber-400{--tw-bg-opacity:1;background-color:rgb(251 191 36/var(--tw-bg-opacity,1))}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129/var(--tw-bg-opacity,1))}.bg-red-500{--tw-bg-opacity:1;background-color:rgb(239 68 68/var(--tw-bg-opacity,1))}.bg-slate-700{--tw-bg-opacity:1;background-color:rgb(51 65 85/var(--tw-bg-opacity,1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59/var(--tw-bg-opacity,1))}.bg-slate-800\/50{background-color:rgba(30,41,59,.5)}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42/var(--tw-bg-opacity,1))}.p-2{padding:.5rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-24{padding-top:6rem;padding-bottom:6rem}.pt-1{padding-top:.25rem}.pt-24{padding-top:6rem}.pt-4{padding-top:1rem}.pt-6{padding-top:1.5rem}.pt-8{padding-top:2rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.capitalize{text-transform:capitalize}.text-amber-400{--tw-text-opacity:1;color:rgb(251 191 36/var(--tw-text-opacity,1))}.text-emerald-500{--tw-text-opacity:1;color:rgb(16 185 129/var(--tw-text-opacity,1))}.text-sky-400{--tw-text-opacity:1;color:rgb(56 189 248/var(--tw-text-opacity,1))}.text-sky-500{--tw-text-opacity:1;color:rgb(14 165 233/var(--tw-text-opacity,1))}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249/var(--tw-text-opacity,1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225/var(--tw-text-opacity,1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity,1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-xl{--tw-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color),0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.hover\:bg-slate-700:hover{--tw-bg-opacity:1;background-color:rgb(51 65 85/var(--tw-bg-opacity,1))}@media (min-width:768px){.md\:flex{display:flex}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:col-span-1{grid-column:span 1/span 1}.lg\:col-span-2{grid-column:span 2/span 2}.lg\:col-span-3{grid-column:span 3/span 3}.lg\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}.lg\:grid-cols-5{grid-template-columns:repeat(5,minmax(0,1fr))}.lg\:space-x-6>:not([hidden])~:not([hidden]){--tw-space-x-reverse:0;margin-right:calc(1.5rem*var(--tw-space-x-reverse));margin-left:calc(1.5rem*(1 - var(--tw-space-x-reverse)))}}
+</style>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    
+<style>
+
+
+        /* CSS Variables */
+        :root {
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475569;
+            --slate-400: #94a3b8;
+            --slate-300: #cbd5e1;
+            --slate-100: #f1f5f9;
+            --sky-500: #0ea5e9;
+            --sky-400: #38bdf8;
+            --amber-400: #fbbf24;
+            --emerald-500: #10b981;
+            --red-500: #ef4444;
+            --sky-900: #0c4a6e;
+            --sky-100: #e0f2fe;
+        }
+
+        /* Global Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        .menu-item {
+            cursor: pointer;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--slate-900);
+            color: var(--slate-300);
+            line-height: 1.6;
+            margin: 0;
+            overflow-wrap: break-word;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Section */
+        .header-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 0 50px;
+            min-height: 56px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--slate-100);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .sub-title {
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: var(--slate-400);
+            margin-top: 0.5rem;
+        }
+
+        #home-btn,
+        #back-btn-header {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--slate-400);
+            padding: 0.75rem;
+            display: none;
+            z-index: 10;
+        }
+
+        #home-btn {
+            left: -10px;
+            display: none !important;
+        }
+
+        #back-btn-header {
+            right: 10px;
+        }
+
+        #home-btn:hover,
+        #back-btn-header:hover {
+            color: var(--slate-100);
+        }
+
+        /* Selection Container */
+        #selection-container, #details-selection-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            min-height: 60vh;
+        }
+
+        .selection-card {
+            background-color: var(--slate-800);
+            border: 1px solid var(--slate-700);
+            border-radius: 1.5rem;
+            padding: 2.5rem 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 320px;
+        }
+
+        .selection-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--sky-500);
+            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.2);
+        }
+
+        .selection-card h2 {
+            font-size: 1.75rem;
+            margin: 0 0 0.5rem;
+            color: var(--slate-100);
+        }
+
+        .selection-card p {
+            margin: 0;
+            color: var(--slate-400);
+        }
+
+        /* Guide Containers */
+        #hardware-guide-container,
+        #software-guide-container,
+        #report-guide-container,
+        #details-guide-container {
+            display: none;
+        }
+
+        #project-report-container,
+        #personal-info-container,
+        #credits-container {
+            display: none;
+        }
+
+        /* Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .right-column {
+            display: none;
+            flex-direction: column;
+        }
+
+        /* Containers */
+        .map-container,
+        .schematic-container,
+        .connection-list-container {
+            background-color: var(--slate-800);
+            border-radius: 1.5rem;
+            border: 1px solid var(--slate-700);
+            padding: 1.5rem;
+            padding-top: 0.5rem;
+            width: 100%;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--slate-100);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .section-title svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            color: var(--sky-400);
+        }
+
+        .section-title-text {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Details Card */
+        .details-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--slate-700);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .details-card-header .section-title-text {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .ai-action-btn {
+            background: transparent;
+            border: none;
+            color: var(--slate-400);
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .ai-action-btn:hover {
+            color: var(--sky-400);
+            background-color: var(--slate-700);
+        }
+
+        .details-card-header h3 {
+            font-size: 1.25rem;
+            color: var(--sky-400);
+            margin: 0;
+        }
+
+        .details-card {
+            background-color: var(--slate-800);
+            border-radius: 1.5rem;
+            border: 1px solid var(--slate-700);
+            padding: 2rem;
+        }
+
+        .details-content {
+            min-height: 100px;
+            background-color: var(--slate-900);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            transition: all 0.2s;
+        }
+
+        .details-content[contenteditable=true] {
+            outline: 2px solid var(--sky-500);
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .details-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .details-btn {
+            background-color: var(--sky-500);
+            border: none;
+            border-radius: 0.5rem;
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .details-btn:hover {
+            background-color: var(--sky-400);
+        }
+
+        .details-btn.save-btn {
+            background-color: var(--emerald-500);
+        }
+
+        .details-btn.save-btn:hover {
+            background-color: #059669;
+        }
+
+        .details-btn.undo-btn {
+            background-color: var(--amber-400);
+            margin-right: auto;
+        }
+
+        .details-btn.undo-btn:hover {
+            background-color: #fca11a;
+        }
+
+        .details-btn:disabled {
+            background-color: var(--slate-600);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Credits and Bibliography */
+        #credits-list,
+        #bibliography-list {
+            padding-left: 20px;
+        }
+
+        .contributor-form {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        #contributor-input {
+            flex-grow: 1;
+        }
+
+        /* AI Modal */
+
+        #ai-modal-overlay #ai-inspector-wrapper {
+            max-width: 70%;
+            width: 70%;
+            max-height: 80vh;
+            display: flex;
+        }
+
+        #ai-modal-overlay .inspector-container {
+            max-height: 80vh;
+            min-height: 520px;
+        }
+
+        #ai-modal-overlay #chat-log {
+            min-height: 300px;
+            max-height: 80vh;
+        }
+
+        #ai-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            backdrop-filter: blur(5px);
+        }
+
+        #ai-modal-overlay.visible {
+            display: flex;
+        }
+
+        #ai-inspector-wrapper {
+            width: 90%;
+            max-width: 500px;
+        }
+
+
+
+        .interactive-map-svg {
+            height: auto;
+            width : 100%;
+        }
+
+        .interactive-map-svg .block {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .interactive-map-svg .block:hover {
+            transform: translateY(-3px);
+        }
+
+        .interactive-map-svg .block rect {
+            fill: var(--slate-700);
+            stroke: var(--slate-600);
+            transition: all 0.2s;
+        }
+
+        .interactive-map-svg .block.highlight rect {
+            fill: var(--sky-500);
+            stroke: var(--sky-400);
+        }
+
+        .interactive-map-svg text {
+            font-size: 19px;
+            user-select: none;
+        }
+
+        /* Schematic SVG */
+        .detail-schematic-svg {
+            width: 100%;
+            height: auto;
+            background-color: var(--slate-900);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .net-node {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        @media (hover: hover) {
+            .net-node:hover,
+            li.net-node:hover,
+            g.net-node:hover {
+                filter: drop-shadow(0 0 8px var(--amber-400));
+            }
+        }
+
+        .net-node.highlight .net-wire {
+            stroke: var(--amber-400);
+            stroke-width: 4;
+        }
+
+        .net-node.highlight .net-pin {
+            fill: var(--amber-400);
+        }
+
+        /* IC Components */
+        .ic-body {
+            fill: #2c3e50;
+        }
+
+        .ic-pin-pad {
+            fill: #bdc3c7;
+        }
+
+        .ic-pin-label {
+            font-size: 11px;
+            fill: var(--slate-600);
+            text-anchor: middle;
+            pointer-events: none;
+        }
+
+        .label {
+            font-size: 14px;
+            fill: var(--slate-100);
+            pointer-events: none;
+        }
+
+        /* Wire Colors */
+        .wire-vref {
+            stroke: var(--sky-400);
+        }
+
+        .wire-signal {
+            stroke: var(--amber-400);
+        }
+
+        .wire-power {
+            stroke: var(--red-500);
+        }
+
+        .wire-gnd {
+            stroke: var(--emerald-500);
+        }
+
+        /* Report Container */
+        .report-container {
+            background-color: var(--slate-800);
+            border-radius: 1.5rem;
+            border: 1px solid var(--slate-700);
+            padding: 2rem;
+            width: 100%;
+        }
+
+        /* Add Component Form */
+        .add-component-form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        #new-component-input {
+            flex-grow: 1;
+            background-color: var(--slate-900);
+            border: 1px solid var(--slate-700);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            color: var(--slate-100);
+            font-size: 1rem;
+        }
+
+        #add-component-btn {
+            background-color: var(--sky-500);
+            border: none;
+            border-radius: 0.5rem;
+            color: white;
+            font-weight: 600;
+            padding: 0 2rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #add-component-btn:hover {
+            background-color: var(--sky-400);
+        }
+
+        /* Report Controls */
+        .report-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .report-actions-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .sort-btn,
+        #export-csv-btn,
+        #undo-delete-btn {
+            background-color: var(--slate-700);
+            border: 1px solid var(--slate-600);
+            color: var(--slate-100);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sort-btn:hover,
+        #export-csv-btn:hover,
+        #undo-delete-btn:hover {
+            background-color: var(--slate-600);
+        }
+
+        .sort-btn.active {
+            background-color: var(--sky-500);
+            border-color: var(--sky-400);
+        }
+
+        #export-csv-btn {
+            background-color: var(--emerald-500);
+            border-color: #059669;
+        }
+
+        #undo-delete-btn {
+            background-color: var(--amber-400);
+            border-color: #d97706;
+            color: var(--slate-900);
+            font-weight: 600;
+        }
+
+        /* Component List */
+        #component-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #component-list li {
+            position: relative;
+            overflow: hidden;
+            background-color: var(--slate-900);
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        #component-list li.deleting {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        .component-list-heading {
+            color: var(--sky-400);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            margin-top: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--slate-700);
+        }
+
+        .component-list-heading:first-child {
+            margin-top: 0;
+        }
+
+        .component-list-subheading {
+            font-weight: 500;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .component-wrapper {
+            position: relative;
+            z-index: 2;
+            background-color: var(--slate-900);
+            padding: 1rem;
+        }
+
+        .component-wrapper.swiping {
+            transition: none;
+        }
+
+        .delete-swipe-bar {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background-color: var(--red-500);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 1.5rem;
+            color: white;
+            pointer-events: none;
+        }
+
+        #component-list .component-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        #component-list .component-main {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-grow: 1;
+            min-width: 200px;
+        }
+
+        #component-list .component-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        #component-list .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .quantity-btn {
+            background-color: var(--slate-700);
+            border: 1px solid var(--slate-600);
+            color: var(--slate-100);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .status-select {
+            background-color: var(--slate-700);
+            border: 1px solid var(--slate-600);
+            color: var(--slate-100);
+            border-radius: 0.5rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        #component-list li span {
+            font-size: 1.1rem;
+        }
+
+        /* AI Help Button */
+        .ai-help-btn {
+            background: transparent;
+            border: none;
+            color: var(--slate-400);
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        .ai-help-btn:hover {
+            color: var(--sky-400);
+        }
+
+
+        /* AI Hint Panel */
+        .ai-hint-panel {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .ai-hint-panel p {
+            margin: 0 0 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .ai-hint-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .ai-hint-input {
+            flex-grow: 1;
+            background-color: var(--slate-900);
+            border: 1px solid var(--slate-600);
+            color: var(--slate-100);
+            padding: 0.5rem;
+            border-radius: 0.3rem;
+        }
+
+        .ai-hint-submit {
+            background-color: var(--amber-400);
+            color: var(--slate-900);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.3rem;
+            cursor: pointer;
+        }
+
+        /* AI Inspector */
+        .right-column #ai-inspector-wrapper {
+            flex-grow: 1;
+            display: flex;
+            width: 100%;
+            max-width: none;
+            height: 100%;
+            max-height: 100%;
+            overflow: hidden;
+        }
+
+        .inspector-container {
+            background-color: var(--slate-800);
+            border-radius: 1.5rem;
+            border: 1px solid var(--slate-700);
+            padding: 2rem;
+            padding-bottom: 2rem; /* ✅ Alt padding ekledik */
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .inspector-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 0px;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        #chat-log {
+            flex: 1 1 0px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 0 1rem 1rem 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            max-height: none;
+        }
+
+        .follow-up-section {
+            margin-top: 1rem;
+            border-top: 1px solid var(--slate-700);
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem; /* ✅ Bu satırı ekle */
+            flex-shrink: 0;
+        }
+
+        #follow-up-input::placeholder {
+            color: var(--slate-400);
+        }
+
+        #follow-up-input:focus {
+            outline: 2px solid var(--sky-500);
+            border-color: var(--sky-500);
+        }
+
+        .chat-message {
+            margin-bottom: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            line-height: 1.6;
+            font-size: 0.9rem;
+            max-width: 90%;
+            word-wrap: break-word;
+            overflow-wrap: break-word; /* ✅ Ekledik */
+            word-break: break-word; /* ✅ Uzun kelimeleri böl */
+            white-space: pre-wrap; /* ✅ Satır atlamalarını koru */
+            overflow-x: hidden; /* ✅ Yatay scroll'u kapat */
+            flex-shrink: 0;
+        }
+
+        .ai-message {
+            background-color: var(--slate-900);
+            align-self: flex-start;
+        }
+
+        .user-message {
+            background-color: var(--sky-900);
+            color: var(--sky-100);
+            align-self: flex-end;
+        }
+
+        .error-message {
+            background-color: var(--red-500);
+            color: white;
+            align-self: flex-start;
+        }
+
+        /* Loading Animation */
+        .loader {
+            border: 4px solid var(--slate-700);
+            border-radius: 50%;
+            border-top: 4px solid var(--sky-500);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Follow-up Input */
+        .follow-up-input-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: stretch; /* Ekledik */
+        }
+
+        #follow-up-input {
+            flex-grow: 1;
+            background-color: var(--slate-900);
+            border: 1px solid var(--slate-700);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            color: var(--slate-100);
+            font-size: 16px; /* iOS zoom önleme */
+            font-family: 'Inter', sans-serif;
+            min-height: 48px;
+            max-height: 120px;
+            resize: none;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            overflow-x: hidden; /* Yatay scroll kapalı */
+            overflow-y: auto;
+            line-height: 1.5;
+            box-sizing: border-box;
+        }
+
+
+        #follow-up-btn {
+            background-color: var(--sky-500);
+            border: none;
+            border-radius: 0.5rem;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem; /* Artırıldı */
+            cursor: pointer;
+            transition: background-color 0.2s;
+            white-space: nowrap; /* Buton metnini tek satırda tutar */
+            min-width: 80px; /* ✅ Ekledik - butonun ezilmemesi için */
+        }
+
+
+        #follow-up-btn:hover {
+            background-color: var(--sky-400);
+        }
+
+        #clear-chat-btn {
+            background: transparent;
+            border: none;
+            color: var(--slate-400);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        #clear-chat-btn:hover {
+            color: var(--slate-100);
+        }
+
+        /* Analyze Connection Button */
+        .analyze-connection-btn {
+            background-color: var(--amber-400);
+            color: var(--slate-900);
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: all 0.2s;
+        }
+
+        .analyze-connection-btn:hover {
+            background-color: #fca11a;
+            transform: translateY(-2px);
+        }
+
+        /* Flowchart Elements */
+        .flowchart-box {
+            fill: var(--slate-700);
+            stroke: var(--slate-600);
+        }
+
+        .flowchart-text {
+            fill: var(--slate-100);
+            font-size: 14px;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            user-select: none;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 1024px) {
+            .main-layout {
+                display: flex;
+                gap: 2rem;
+                align-items: stretch;
+                min-height: 70vh;
+            }
+
+            .left-column {
+                flex: 2.5;
+                min-width: 0;
+            }
+
+            .right-column {
+                display: flex;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .report-container {
+                max-width: none;
+            }
+
+            .left-column > .map-container,
+            .left-column > .schematic-container {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Panellerin içindeki asıl içerik alanlarının da bu yeni boşluğu doldurmasını sağlar */
+            .map-container > .interactive-map-svg,
+            .schematic-container > div {
+                flex-grow: 1;
+                min-height: 0;
+            }
+
+            /* Şema SVG'sinin, büyüyen container'ına tam olarak ve bozulmadan yayılmasını sağlar */
+            .schematic-container .detail-schematic-svg {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+        }
+
+        @media (max-width: 1023px) {
+
+            .inspector-container {
+                padding: 1.5rem;
+                padding-bottom: 2rem; /* ✅ Alt boşluk */
+                border-radius: 1.5rem; /* ✅ Köşeler yuvarlak kalsın */
+            }
+
+            .follow-up-section {
+                padding-bottom: 2.5rem; /* ✅ Mobilde biraz daha az */
+                margin-top: auto;
+            }
+
+            .left-column {
+                width: 100%;
+            }
+            .map-container,
+            .schematic-container {
+                padding: 1rem;
+            }
+
+            .main-layout {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .right-column {
+                display: flex;
+                flex-direction: column;
+                min-height: 600px; /* Artırıldı */
+                width: 100%;
+                margin-top: 1rem;
+                position: static;
+            }
+
+            .right-column > #ai-inspector-wrapper {
+                flex: 1;
+                display: flex;
+                flex-direction: column; /* Ekledik */
+                min-height: 600px; /* Artırıldı */
+                width: 100%;
+            }
+
+            .right-column .inspector-container {
+                padding: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                min-height: 600px; /* Artırıldı */
+                flex: 1; /* Ekledik */
+            }
+
+            .right-column .inspector-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                min-height: 400px; /* Ekledik */
+            }
+
+            .right-column #chat-log {
+                flex: 1;
+                overflow-y: auto;
+                min-height: 300px; /* Artırıldı */
+                max-height: 400px; /* Ekledik - taşmayı önler */
+            }
+
+
+            .follow-up-input-group {
+                display: flex;
+                gap: 0.5rem;
+                align-items: stretch;
+            }
+
+            #follow-up-input {
+                min-height: 48px;
+                font-size: 16px;
+                padding: 0.75rem;
+            }
+
+            #follow-up-btn {
+                background-color: var(--sky-500);
+                border: none;
+                border-radius: 0.5rem;
+                color: white;
+                font-weight: 600;
+                padding: 0.75rem 1.5rem;
+                cursor: pointer;
+                transition: background-color 0.2s;
+                white-space: nowrap;
+                min-width: 80px;
+                align-self: flex-end; /* ✅ Buton alta hizalansın */
+            }
+        }
+
+
+
+        @media (max-width: 480px) {
+            .header-section {
+                padding: 0 30px;
+            }
+
+            .main-title {
+                font-size: 1.8rem;
+            }
+
+            .sub-title {
+                font-size: 1rem;
+            }
+
+            #home-btn {
+                left: -30px;
+            }
+
+            #back-btn-header {
+                right: 0;
+            }
+
+            #admin-login-btn {
+                padding: 0.75rem;
+                width: auto;
+            }
+
+            #admin-login-btn span {
+                display: none;
+            }
+        }
+
+        /* YENİ EKLENDİ: Admin Login Stilleri */
+#admin-login-btn {
+    position: fixed;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    background-color: var(--slate-700);
+    color: var(--slate-300);
+    border: 1px solid var(--slate-600);
+    border-radius: 0.6rem;
+    padding: 0.4rem 0.7rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    z-index: 2147483647; /* en üstte */
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#admin-login-btn:hover {
+    background-color: var(--slate-600);
+    border-color: var(--sky-500);
+    color: var(--slate-100);
+}
+
+#admin-login-btn.logout {
+    background-color: var(--amber-400);
+    color: var(--slate-900);
+    border-color: #d97706;
+}
+
+#login-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.8);
+    display: none; /* JS ile 'flex' yapılacak */
+    align-items: center;
+    justify-content: center;
+    z-index: 1999;
+    backdrop-filter: blur(5px);
+}
+
+#login-modal-overlay.visible {
+    display: flex;
+}
+
+#login-modal {
+    background-color: var(--slate-800);
+    border: 1px solid var(--slate-700);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+    color: var(--slate-300);
+}
+
+#login-modal h2 {
+    color: var(--slate-100);
+    margin: 0 0 0.5rem;
+}
+
+#login-modal input {
+    width: 100%;
+    background-color: var(--slate-900);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    color: var(--slate-100);
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+
+#login-modal input:focus {
+    outline: none;
+    border-color: var(--sky-500);
+    box-shadow: 0 0 10px rgba(14, 165, 233, 0.2);
+}
+
+#login-submit-btn {
+    width: 100%;
+    background-color: var(--sky-500);
+    border: none;
+    border-radius: 0.5rem;
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+}
+
+#login-submit-btn:hover {
+    background-color: var(--sky-400);
+}
+
+#login-error-msg {
+    color: var(--red-500);
+    margin-top: 1rem;
+    min-height: 1.2em;
+    font-size: 0.9rem;
+}
+
+#login-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: var(--slate-400);
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+
+        :root {
+            --slate-900: #0f172a; --slate-800: #1e2b3b; --slate-700: #334155;
+            --slate-600: #475569; --slate-500: #64748b; --slate-400: #94a3b8; --slate-300: #cbd5e1;
+            --slate-100: #f1f5f9; --sky-500: #0ea5e9; --sky-400: #38bdf8;
+            --amber-400: #fbbf24; --emerald-500: #10b981; --red-500: #ef4444;
+        }
+        html { scroll-padding-top: 70px; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--slate-900); color: var(--slate-300); }
+        h1, h2, h3, h4, .font-bold { color: var(--slate-100); }
+
+        .animated-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animated-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        header.sticky-header { background-color: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); border-bottom: 1px solid var(--slate-700); }
+        header.sticky-header .nav-container { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1280px; margin: 0 auto; padding: 0.75rem 1.5rem; height: 65px; }
+        .header-title { font-size: 1.25rem; font-weight: 700; color: var(--sky-500); flex-shrink: 0; }
+        .nav-link { font-size: 0.9rem; font-weight: 500; transition: color 0.2s, border-bottom-color 0.2s, transform 0.2s; border-bottom: 2px solid transparent; color: var(--slate-300); padding: 0.25rem 0; }
+        .nav-link.active, .nav-link:hover { color: var(--sky-500); border-bottom-color: var(--sky-500); transform: translateY(-2px); }
+        #menu-btn { background: transparent; border: none; cursor: pointer; z-index: 55; padding: 0.5rem; }
+        #menu-btn span { display: block; width: 28px; height: 2px; background-color: var(--slate-100); margin: 5px 0; transition: all 0.3s ease-in-out; }
+        body.menu-active #menu-btn span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+        body.menu-active #menu-btn span:nth-child(2) { opacity: 0; }
+        body.menu-active #menu-btn span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+
+        #mobile-menu {
+            position: fixed; top: 65px; right: 0; width: 85%; max-width: 350px;
+            background-color: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px);
+            border-left: 1px solid var(--slate-700); border-bottom: 1px solid var(--slate-700);
+            z-index: 1001; padding: 1.5rem; opacity: 0;
+            transform: translateX(100%) scale(0.98);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease;
+            display: flex; flex-direction: column; gap: 1rem; border-radius: 0 0 0 1rem; box-shadow: -10px 10px 30px rgba(0,0,0,0.3);
+        }
+        body.menu-active #mobile-menu { transform: translateX(0) scale(1); opacity: 1; }
+        #mobile-menu .menu-item { display: block; padding: 1rem; border-radius: 0.75rem; background-color: var(--slate-900); border: 1px solid var(--slate-700); transition: background-color 0.2s, border-color 0.2s, transform 0.2s; }
+        #mobile-menu .menu-item:hover { background-color: var(--slate-700); border-color: var(--sky-500); transform: translateY(-3px) scale(1.02); }
+        #mobile-menu .menu-item h3 { font-size: 1.1rem; font-weight: 600; color: var(--slate-100); }
+        #mobile-menu .menu-item p { font-size: 0.9rem; color: var(--slate-400); margin-top: 0.25rem; }
+
+        .arch-subsystem { background-color: var(--slate-900); border: 1px solid var(--slate-700); border-radius: 1rem; padding: 1.5rem; text-align: center; }
+        .arch-block { flex: 1; cursor: pointer; padding: 0.75rem; border-radius: 0.5rem; background-color: var(--slate-800); border: 1px solid var(--slate-600); transition: all 0.2s ease; text-align: center; font-weight: 500; }
+        .arch-block:hover, .arch-block.active { border-color: var(--sky-500); background-color: var(--slate-700); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .arch-connector { height: 30px; width: 2px; background-color: var(--slate-600); margin: 0.5rem auto; position: relative; }
+        .arch-connector::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--slate-600); }
+        .arch-arrow { display: flex; align-items: center; justify-content: center; color: var(--slate-500); font-size: 1.5rem; padding: 0 0.5rem; }
+        .arch-arrow::after { content: '→'; }
+
+        /* YOL HARİTASI (TIMELINE) */
+        .phase-header { cursor: pointer; }
+        #phase-container { display: flex; flex-direction: column; }
+        .phase { display: flex; gap: 1.5rem; align-items: flex-start; position: relative; }
+        .phase-dot-container { position: relative; display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; flex-shrink: 0; }
+        .phase:not(:last-child) .phase-dot-container::after { content: ''; position: absolute; width: 3px; background-color: #334155; left: 50%; top: 100%; height: var(--connector-height, 3rem); transform: translateX(-50%); transition: height 0.7s ease-in-out; }
+        .phase-dot { width: 1.25rem; height: 1.25rem; border-radius: 9999px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; position: relative; }
+        .phase.planned .phase-dot { background-color: var(--slate-800); border: 3px solid var(--slate-600); }
+        .phase.in-progress .phase-dot::before { content: ''; position: absolute; width: 100%; height: 100%; border-radius: 9999px; background-color: var(--sky-500); opacity: 0.75; animation: ping-small 2s cubic-bezier(0, 0, 0.2, 1) infinite; }
+        @keyframes ping-small { 75%, 100% { transform: scale(2.5); opacity: 0; } }
+        .phase.in-progress .phase-dot { background-color: var(--sky-400); border: 2px solid var(--sky-500); }
+        .phase.completed .phase-dot { background-color: var(--emerald-500); border: none; box-shadow: 0 0 12px 3px rgba(16, 185, 129, 0.5); }
+        .phase.active .phase-dot { transform: scale(1.05); }
+        .phase-content-wrapper { transition: max-height 0.7s ease-in-out, margin-top 0.7s ease-in-out, opacity 0.5s, transform 0.7s; max-height: 0; overflow: hidden; margin-top: 0; opacity: 0; transform: translateY(-10px) scale(0.98); }
+        .phase.active .phase-content-wrapper { max-height: 3000px; margin-top: 1rem; opacity: 1; transform: translateY(0) scale(1); }
+        .phase-details-nav { display: flex; gap: 0.5rem; border-bottom: 2px solid var(--slate-700); margin-bottom: 1rem; overflow-x: auto; -ms-overflow-style: none; scrollbar-width: none;}
+        .phase-details-nav::-webkit-scrollbar { display: none; }
+        .phase-details-tab { padding: 0.75rem 1rem; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.2s; font-weight: 500; color: var(--slate-400); display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+        .phase-details-tab:hover { color: var(--sky-400); }
+        .phase-details-tab.active { color: var(--sky-500); border-bottom-color: var(--sky-500); }
+        .phase-details-content { display: none; }
+        .phase-details-content.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .detail-card { background-color: var(--slate-900); padding: 1rem; border-radius: 0.75rem; border: 1px solid var(--slate-700); }
+        .risk-card { border-left: 4px solid; padding: 1rem; }
+        .risk-high { border-color: var(--red-500); background-color: rgba(239, 68, 68, 0.1); }
+        .risk-medium { border-color: var(--amber-400); background-color: rgba(251, 191, 36, 0.1); }
+
+        .card, .stat-card { background-color: var(--slate-800) !important; border: 1px solid var(--slate-700) !important; border-radius: 1.5rem; padding: 2rem; box-shadow: none !important; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover, .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 6px rgba(0, 0, 0, 0.23) !important; }
+        .action-button { background-color: var(--sky-500); border-radius: 0.5rem; color: white; font-weight: 600; padding: 0.75rem 1.5rem; cursor: pointer; transition: background-color 0.2s, transform 0.2s; width: 100%; text-align: center; }
+        .action-button:hover { background-color: var(--sky-400); transform: scale(1.03); }
+        .detail-content { max-height: 0; overflow: hidden; transition: max-height 0.7s, margin-top 0.7s; margin-top: 0; }
+        .detail-content.expanded { max-height: 2000px; margin-top: 1.5rem; }
+
+        .insight-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(51, 65, 85, 0.5));
+            border: 1px solid var(--slate-700); padding: 2rem; border-radius: 1rem;
+            display: flex; align-items: flex-start; gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2); position: relative; overflow: hidden;
+        }
+        .insight-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: linear-gradient(180deg, var(--amber-400), var(--sky-400));
+            animation: grow-border 2s ease-out forwards;
+        }
+        @keyframes grow-border { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+        .insight-icon { flex-shrink: 0; color: var(--amber-400); margin-top: 5px; }
+        .insight-title { font-weight: 700; font-size: 1.25rem; color: var(--amber-400); margin-bottom: 0.5rem; }
+        .insight-text { color: var(--slate-300); line-height: 1.6; }
+        .insight-text strong { color: var(--slate-100); font-weight: 600; }
+
+        /* ===== PWA ve MOBİL İYİLEŞTİRMELERİ ===== */
+        
+        /* PWA Install Prompt */
+        .pwa-install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--slate-800), var(--slate-700));
+            border: 1px solid var(--sky-500);
+            border-radius: 16px;
+            padding: 20px;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            animation: slideUpIn 0.3s ease-out;
+        }
+
+        @keyframes slideUpIn {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .pwa-install-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .pwa-install-icon {
+            color: var(--sky-500);
+            flex-shrink: 0;
+        }
+
+        .pwa-install-text {
+            flex: 1;
+        }
+
+        .pwa-install-text h3 {
+            color: var(--slate-100);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .pwa-install-text p {
+            color: var(--slate-400);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .pwa-install-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .pwa-install-button {
+            background: var(--sky-500);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .pwa-install-button:hover {
+            background: var(--sky-400);
+        }
+
+        .pwa-install-dismiss {
+            background: transparent;
+            color: var(--slate-400);
+            border: 1px solid var(--slate-600);
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pwa-install-dismiss:hover {
+            background: var(--slate-700);
+            color: var(--slate-100);
+        }
+
+        /* Offline Indicator */
+        .offline-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--amber-400);
+            color: var(--slate-900);
+            text-align: center;
+            padding: 8px;
+            z-index: 1001;
+            font-weight: 600;
+            animation: slideDownIn 0.3s ease-out;
+        }
+
+        @keyframes slideDownIn {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .offline-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--slate-900);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999; /* daha düşük katman */
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: var(--slate-100);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--slate-700);
+            border-top: 4px solid var(--sky-500);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .loading-content h2 {
+            font-size: 1.5rem;
+            margin: 0 0 8px 0;
+            color: var(--sky-500);
+        }
+
+        .loading-content p {
+            color: var(--slate-400);
+            margin: 0;
+        }
+
+        /* Touch Gesture Improvements */
+        .touch-action-pan-x {
+            touch-action: pan-x;
+        }
+
+        .touch-action-pan-y {
+            touch-action: pan-y;
+        }
+
+        .touch-action-manipulation {
+            touch-action: manipulation;
+        }
+
+        /* Enhanced Mobile Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--slate-800);
+            border-top: 1px solid var(--slate-700);
+            display: none;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 12px;
+            color: var(--slate-400);
+            text-decoration: none;
+            transition: color 0.2s;
+            min-width: 60px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: var(--sky-500);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-item span {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Improved Touch Targets */
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Enhanced Form Elements */
+        input, textarea, select {
+            min-height: 44px;
+            font-size: 16px; /* Prevents zoom on iOS */
+            border-radius: 8px;
+            padding: 12px 16px;
+            transition: all 0.2s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: 2px solid var(--sky-500);
+            outline-offset: 2px;
+            border-color: var(--sky-500);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        /* Swipe Gesture Indicators */
+        .swipe-indicator {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--slate-500);
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .component-wrapper:hover .swipe-indicator {
+            opacity: 1;
+        }
+
+        /* Improved Mobile Menu */
+        @media (max-width: 768px) {
+            .bottom-nav {
+                display: flex;
+            }
+
+            #mobile-menu {
+                bottom: 60px; /* Account for bottom nav */
+            }
+
+            /* Enhanced mobile cards */
+            .card, .stat-card {
+                margin-bottom: 1rem;
+                padding: 1.5rem;
+            }
+
+            /* Better mobile charts */
+            .chart-container {
+                height: 250px;
+                margin: 1rem 0;
+            }
+
+            /* Improved mobile tables */
+            .overflow-x-auto {
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Mobile-optimized buttons */
+            .action-button {
+                min-height: 48px;
+                font-size: 1rem;
+                padding: 12px 24px;
+            }
+
+            /* Better mobile spacing */
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            /* Mobile-optimized phase timeline */
+            .phase {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .phase-dot-container {
+                align-self: flex-start;
+            }
+
+            /* Improved mobile AI inspector */
+            .inspector-container {
+                padding: 1rem;
+                border-radius: 1rem;
+            }
+
+            .follow-up-input-group {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            #follow-up-input {
+                min-height: 48px;
+                font-size: 16px;
+            }
+
+            #follow-up-btn {
+                width: 100%;
+                min-height: 48px;
+            }
+        }
+
+        /* PWA Standalone Mode */
+        @media (display-mode: standalone) {
+            .header-section {
+                padding-top: env(safe-area-inset-top, 0);
+            }
+
+            .bottom-nav {
+                padding-bottom: env(safe-area-inset-bottom, 8px);
+            }
+
+            /* Hide browser UI elements */
+            body {
+                -webkit-user-select: none;
+                -webkit-touch-callout: none;
+            }
+
+            /* Prevent pull-to-refresh */
+            body {
+                overscroll-behavior: none;
+            }
+        }
+
+        /* High DPI Display Support */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .loading-spinner {
+                border-width: 2px;
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                color-scheme: dark;
+            }
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .loading-spinner {
+                animation: none;
+                border: 4px solid var(--sky-500);
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .bottom-nav,
+            .pwa-install-prompt,
+            .offline-indicator,
+            .loading-screen,
+            #admin-login-btn {
+                display: none !important;
+            }
+
+            .card, .stat-card {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+        }
+
+</style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmImewaVbf" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" xintegrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+</head>
+<body class="antialiased">
+
+<header class="sticky-header sticky top-0 z-50">
+    <div class="nav-container">
+        <a href="#" class="header-title">AEK Projesi</a>
+        <nav class="hidden md:flex flex-1 justify-center items-center space-x-4 lg:space-x-6">
+            <a href="#dashboard" class="nav-link">Gösterge Paneli</a>
+            <a href="#overview" class="nav-link">Genel Bakış</a>
+            <a href="#architecture" class="nav-link">Sistem Mimarisi</a>
+            <a href="#data" class="nav-link">Teknik Veriler</a>
+            <a href="#roadmap" class="nav-link">Yol Haritası</a>
+        </nav>
+        <button id="menu-btn" class="" aria-label="Navigasyonu aç/kapa" aria-controls="mobile-menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+<div id="mobile-menu">
+    <div data-guide="hardware" class="menu-item"><h3>Donanım Montaj</h3><p>İnteraktif devre şemaları.</p></div>
+    <div data-guide="software" class="menu-item"><h3>Yazılım Algoritması</h3><p>Codecell ve Android mimarisi.</p></div>
+    <div data-guide="report" class="menu-item"><h3>Komponent Raporu</h3><p>Proje malzeme listesi yönetimi.</p></div>
+    <div data-guide="details" class="menu-item"><h3>Proje Raporu ve Detaylar</h3><p>Genel rapor, kişisel bilgiler ve kaynakça.</p></div>
+</div>
+
+<main id="welcome-screen-container" class="container mx-auto px-6 py-12">
+
+    <section id="dashboard" class="pt-8 animated-section">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold">Proje Gösterge Paneli</h1>
+            <p class="max-w-3xl mx-auto text-lg mt-4 text-slate-400">Projenin temel metriklerini, mimarisini ve yol haritasını interaktif olarak keşfedin.</p>
+        </header>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6">Mimari Analizi</h2>
+                <p class="text-slate-400 mb-6">Sinyal bütünlüğünü ve gürültü direncini en üst düzeye çıkarmak için 'Dijital Sinyal Yolu' mimarisi seçilmiştir.</p>
+                <button class="action-button detail-toggle" data-target="architecture-details" data-text-default="Mimarileri Karşılaştır" data-text-expanded="Karşılaştırmayı Gizle" aria-controls="architecture-details" aria-expanded="false">Mimarileri Karşılaştır</button>
+                <div id="architecture-details" class="detail-content">
+                    <div class="overflow-x-auto pt-6">
+                        <table class="w-full text-left border-collapse">
+                            <thead><tr><th class="p-3 border-b border-slate-700">Özellik</th><th class="p-3 border-b border-slate-700 text-center">V1 (Analog)</th><th class="p-3 border-b border-slate-700 text-center">V2 (Dijital)</th></tr></thead>
+                            <tbody>
+                            <tr><td class="p-3 border-b border-slate-700">Gürültü Direnci</td><td class="p-3 border-b border-slate-700"><div class="w-full bg-slate-700 rounded-full h-2.5"><div class="bg-red-500 h-2.5 rounded-full" style="width: 20%"></div></div></td><td class="p-3 border-b border-slate-700"><div class="w-full bg-slate-700 rounded-full h-2.5"><div class="bg-emerald-500 h-2.5 rounded-full" style="width: 95%"></div></div></td></tr>
+                            <tr><td class="p-3 border-b border-slate-700">Sinyal Bütünlüğü</td><td class="p-3 border-b border-slate-700"><div class="w-full bg-slate-700 rounded-full h-2.5"><div class="bg-red-500 h-2.5 rounded-full" style="width: 30%"></div></div></td><td class="p-3 border-b border-slate-700"><div class="w-full bg-slate-700 rounded-full h-2.5"><div class="bg-emerald-500 h-2.5 rounded-full" style="width: 90%"></div></div></td></tr>
+                            <tr><td class="p-3 border-b border-slate-700">Hassasiyet</td><td class="p-3 border-b border-slate-700"><div class="w-full bg-slate-700 rounded-full h-2.5"><div class="bg-amber-400 h-2.5 rounded-full" style="width: 50%"></div></div></td><td class="p-3 border-b border-slate-700"><div class="w-full bg-slate-700 rounded-full h-2.5"><div class="bg-emerald-500 h-2.5 rounded-full" style="width: 85%"></div></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card lg:col-span-1">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-6">Donanım Analizi</h2>
+                        <p class="text-slate-400 mb-6">RF kanalları, verici/alıcı devreleri ile birlikte toplam bileşen sayısının çoğunluğunu oluşturur. Detaylı maliyet için keşfet butonuna tıklayın.</p>
+                        <div class="relative w-full h-64"><canvas id="componentDonutChart"></canvas></div>
+                    </div>
+                    <div class="self-center">
+                        <button class="action-button detail-toggle" data-target="hardware-details" data-text-default="Donanım Detayları" data-text-expanded="Detayları Gizle" aria-controls="hardware-details" aria-expanded="false">Donanım Detayları</button>
+                        <div id="hardware-details" class="detail-content">
+                            <h3 class="text-lg font-semibold mb-4 text-center text-slate-100">Tahmini Maliyet Dağılımı</h3>
+                            <div class="relative w-full h-64"><canvas id="costBarChart"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="overview" class="pt-24 text-center animated-section">
+        <h2 class="text-4xl font-bold mb-4">Proje Genel Bakışı</h2>
+        <p class="max-w-3xl mx-auto text-lg mb-12">DJI drone'lar için el hareketleriyle sezgisel, düşük gecikmeli ve yüksek hassasiyetli kontrol sağlayan, giyilebilir yeni nesil bir insan-makine arayüzü.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left mb-16">
+            <div class="stat-card"> <h3 class="font-bold text-xl mb-2 text-sky-500">Sezgisel Kontrol</h3> <p>Doğal el hareketleri drone kontrolünü basitleştirir.</p> </div>
+            <div class="stat-card"> <h3 class="font-bold text-xl mb-2 text-sky-500">Düşük Gecikme</h3> <p>Hedeflenen <200ms gecikme ile anlık tepki sunar.</p> </div>
+            <div class="stat-card"> <h3 class="font-bold text-xl mb-2 text-sky-500">Teknoloji Füzyonu</h3> <p>Statik ve dinamik hareket algılamayı birleştirir.</p> </div>
+            <div class="stat-card"> <h3 class="font-bold text-xl mb-2 text-sky-500">Yüksek Doğruluk</h3> <p>Hedeflenen jest tanıma doğruluğu >95%.</p> </div>
+        </div>
+        <div class="card">
+            <h3 class="text-2xl font-bold mb-6 text-center">Temel Algılama Felsefesi: Çoklu-Modalite Füzyonu</h3>
+            <p class="max-w-4xl mx-auto text-md mb-8">Sistemin inovasyonunun merkezinde, statik parmak pozisyonlarını ve elin dinamik hareketini yüksek doğrulukla algılayan iki farklı teknolojinin birleşimi yatar.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                <div class="bg-slate-900 p-6 rounded-lg border border-slate-700"><h4 class="font-bold text-lg mb-2">1. Statik Duruş Algılama (Posture)</h4><p class="font-semibold mb-2 text-sky-400">Rezonant Endüktif Kuplaj</p><p>Başparmak ve diğer parmaklar arasındaki manyetik kuplajı ölçerek "yumruk", "işaret etme" gibi duruşları güvenilir şekilde tanımlar.</p></div>
+                <div class="bg-slate-900 p-6 rounded-lg border border-slate-700"><h4 class="font-bold text-lg mb-2">2. Dinamik Hareket Algılama (Motion)</h4><p class="font-semibold mb-2 text-sky-400">Ataletsel Ölçüm Birimi (IMU)</p><p>BNO085 sensörü ile elin uzaydaki yönelimini ve ivmesini takip ederek "kaydırma", "yükselme" gibi hareketleri tespit eder.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture" class="py-24 animated-section">
+        <h2 class="text-3xl font-bold mb-4 text-center">Sistem Mimarisi</h2>
+        <p class="max-w-3xl mx-auto text-lg mb-12 text-center">Donanım mimarisi, sinyal kalitesini en üst düzeye çıkarmak ve güç verimliliğini optimize etmek için çok aşamalı bir yaklaşımla tasarlanmıştır.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+            <div id="arch-details" class="lg:col-span-2 card h-full">
+                <h3 class="font-bold text-lg mb-2 text-sky-500">Bileşen Detayları</h3>
+                <p>Detayları görmek için şemadaki bir bileşene tıklayın.</p>
+            </div>
+            <div class="lg:col-span-3 space-y-4">
+                <div class="arch-subsystem">
+                    <h4 class="font-semibold text-sky-400">Verici (Tx) Alt Sistemi</h4>
+                    <div class="flex justify-center gap-4 mt-4">
+                        <div data-title="Saat Jeneratörü (Si5351A)" data-desc="Sistemin 3.2 MHz'lik kararlı referans sinyalini üretir." class="arch-block">Saat Jeneratörü</div>
+                        <div data-title="Q-Multiplier (TLV9061)" data-desc="Rezonans devresinin Kalite (Q) Faktörünü aktif olarak artırarak sistemin hassasiyetini yükseltir." class="arch-block">Q-Multiplier</div>
+                    </div>
+                </div>
+                <div class="arch-connector"></div>
+                <div class="arch-subsystem">
+                    <h4 class="font-semibold text-slate-300">Alıcı (Rx) Alt Sistemi (x4)</h4>
+                    <div class="flex items-center justify-center gap-0 mt-4">
+                        <div data-title="Tamponlama (TLV9064)" data-desc="Zayıf sinyali tamponlayarak sinyal bütünlüğünü korur." class="arch-block">Tamponlama</div>
+                        <div class="arch-arrow"></div>
+                        <div data-title="Logaritmik Dedektör (AD8307)" data-desc="RF sinyal gücünü kararlı bir DC gerilimine dönüştürür." class="arch-block">Log Dedektör</div>
+                        <div class="arch-arrow"></div>
+                        <div data-title="ADC (MCP3204)" data-desc="Analog sinyali 12-bit çözünürlükle dijital veriye çevirir." class="arch-block">ADC</div>
+                    </div>
+                </div>
+                <div class="arch-connector"></div>
+                <div class="flex justify-center gap-4">
+                    <div data-title="İşlem ve Kontrol (ESP32)" data-desc="Sistemin beyni. Tüm sensör verilerini işler, jest tanıma motorunu çalıştırır ve BLE üzerinden iletişimi yönetir." class="arch-block">İşlem ve Kontrol</div>
+                    <div data-title="Güç Yönetimi (MP2307 + LDO)" data-desc="Batarya voltajını, verimli ve gürültüsüz şekilde 3.3V'a regüle eden iki aşamalı bir yapı." class="arch-block">Güç Yönetimi</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="data" class="py-24 card animated-section">
+        <h2 class="text-3xl font-bold mb-4 text-center">Kritik Teknik Veriler</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center mt-8">
+            <div class="lg:col-span-2">
+                <h3 class="text-2xl font-bold mb-4">Q-Faktörü Analizi</h3>
+                <p class="text-slate-400 mb-6">Grafik, mevcut teorik ($Q_{teorik}$), simülasyon ($Q_{sim}$) ve hedeflenen ($Q_{istenen}$) Q-faktörü değerlerini net bir şekilde karşılaştırmaktadır. Bu görselleştirme, projenin mevcut durumu ile hedefleri arasındaki farkı vurgular.</p>
+                <div class="mt-4 text-sm text-slate-500">
+                    <p class="mb-2"><span class="font-semibold text-amber-400">Teorik Q:</span> $Q = \omega L / R_s$</p>
+                    <p><span class="font-semibold text-sky-400">Simülasyon Q:</span> $Q = f_{res} / \Delta f$</p>
+                </div>
+            </div>
+            <div class="relative w-full h-80 lg:col-span-3">
+                <canvas id="qFactorChart"></canvas>
+            </div>
+        </div>
+        <div class="insight-card mt-12">
+            <div class="insight-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l.346.666L19.5 15.343V21a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1v-5.657L11.654 3.356A.5.5 0 0 1 12 2.69z"/><path d="M12 18h.01"/></svg>
+            </div>
+            <div>
+                <h4 class="insight-title">Stratejik Analiz ve Sonuç</h4>
+                <p class="insight-text">Hem teorik hesaplamaların hem de simülasyonların ~$25$ civarında bir doğal Q-faktörüne işaret etmesi, Q-Multiplier devresini projenin başarısı için "performans artırıcı" statüsünden <strong>"görev-kritik"</strong> statüsüne yükseltmiştir. Bu analiz, fiziksel prototip üretilmeden önce tasarımın kritik bir parçasını doğrulamaktadır.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="roadmap" class="py-24 animated-section">
+        <h2 class="text-3xl font-bold mb-4 text-center">Proje Uygulama Yol Haritası</h2>
+        <p class="max-w-3xl mx-auto text-lg mb-12 text-center">Proje 6 mantıksal faza ayrılmıştır. Her fazın durumunu interaktif olarak yönetebilir ve detaylarını inceleyebilirsiniz.</p>
+        <div id="phase-container" class="max-w-4xl mx-auto relative">
+            <!-- Fazlar JavaScript tarafından buraya eklenecek -->
+        </div>
+    </section>
+</main>
+
+<div id="technical-guides-wrapper" class="main-container" style="display: none;">
+    <header class="header-section">
+        <button id="home-btn" title="Ana Sayfa">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.25">
+                <path d="M1 10 l 11 -8 l 11 8 v 2 h -3 v 10 H 5 v -10 H 2 z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+        </button>
+        <button id="back-btn-header" title="Geri Dön">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.25">
+                <path d="M15 18l-6-6 6-6"/>
+            </svg>
+        </button>
+        <h1 class="main-title">Akıllı Eldiven Projesi</h1>
+        <h2 class="sub-title" id="main-subtitle">Lütfen bir kılavuz seçin</h2>
+    </header>
+
+
+
+    <!-- Donanım Kılavuzu -->
+    <div id="hardware-guide-container">
+        <div class="main-layout">
+            <div class="left-column">
+                <div class="map-container">
+                    <h2 class="section-title">
+                        <div class="section-title-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                            </svg>
+                            Devre Aşamaları
+                        </div>
+                    </h2>
+                    <svg viewBox="0 0 840 150" class="interactive-map-svg"></svg>
+                </div>
+
+                <div class="schematic-container">
+                    <h2 class="section-title">
+                        <div class="section-title-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 2h12l2 2v2h2v8h-2v2l-2 2H6l-2-2v-2H2V6h2V4l2-2z"></path>
+
+                                <rect x="8" y="8" width="8" height="8" rx=".5"></rect>
+                                <path d="M9 8V7M10.75 8V7M12.5 8V7M14.25 8V7"></path>
+                                <path d="M9 16v1M10.75 16v1M12.5 16v1M14.25 16v1"></path>
+                                <path d="M8 9H7M8 10.75H7M8 12.5H7M8 14.25H7"></path>
+                                <path d="M16 9h1M16 10.75h1M16 12.5h1M16 14.25h1"></path>
+
+                                <rect x="4.5" y="3.5" width="3" height="2" rx="1"></rect>
+                                <rect x="9.5" y="3.5" width="3" height="2" rx="1"></rect>
+                                <rect x="14.5" y="3.5" width="3" height="2" rx="1"></rect>
+                                <line x1="7.5" y1="4.5" x2="9.5" y2="4.5"></line>
+                                <line x1="12.5" y1="4.5" x2="14.5" y2="4.5"></line>
+
+                                <line x1="18" y1="8" x2="18" y2="16"></line>
+                                <circle cx="18" cy="8" r=".75"></circle>
+                                <circle cx="18" cy="10.66" r=".75"></circle>
+                                <circle cx="18"cy="13.33" r=".75"></circle>
+                                <circle cx="18" cy="16" r=".75"></circle>
+                            </svg>
+                            Fiziksel Bağlantı Şeması
+                        </div>
+                    </h2>
+                    <div id="hardware-schematic-container"></div>
+                </div>
+
+                <div id="hardware-connection-list-container" class="connection-list-container">
+                    <h2 class="section-title" style="font-size:1.25rem">
+                        <div class="section-title-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path>
+                            </svg>
+                            Bağlantı Noktası Detayları
+                        </div>
+                    </h2>
+                    <ul class="connection-list"></ul>
+                    <button class="analyze-connection-btn">✨ Bu Bağlantıyı Analiz Et</button>
+                </div>
+            </div>
+            <div class="right-column" id="hardware-ai-column"></div>
+        </div>
+    </div>
+
+    <!-- Yazılım Kılavuzu -->
+    <div id="software-guide-container">
+        <div class="main-layout">
+            <div class="left-column">
+                <div class="map-container">
+                    <h2 class="section-title">
+                        <div class="section-title-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                                <line x1="10" y1="19" x2="14" y2="5"></line>
+                            </svg>
+                            Yazılım Mimarisi
+                        </div>
+                    </h2>
+                    <svg viewBox="0 0 840 150" class="interactive-map-svg"></svg>
+                </div>
+
+                <div class="schematic-container">
+                    <h2 class="section-title">
+                        <div class="section-title-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect width="18" height="18" x="3" y="3" rx="2"/>
+                                <path d="M8 12h8"/>
+                                <path d="M12 8v8"/>
+                            </svg>
+                            Algoritma Akış Şeması
+                        </div>
+                    </h2>
+                    <div id="software-schematic-container"></div>
+                </div>
+
+                <div id="software-connection-list-container" class="connection-list-container">
+                    <h2 class="section-title" style="font-size:1.25rem">
+                        <div class="section-title-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path>
+                            </svg>
+                            Algoritma Detayları
+                        </div>
+                    </h2>
+                    <ul class="connection-list"></ul>
+                    <button class="analyze-connection-btn">✨ Bu Adımı Analiz Et</button>
+                </div>
+            </div>
+            <div class="right-column" id="software-ai-column"></div>
+        </div>
+    </div>
+
+    <!-- Rapor Kılavuzu -->
+    <div id="report-guide-container">
+        <div class="report-container">
+            <h2 class="section-title">
+                <div class="section-title-text">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    Komponent Raporu
+                </div>
+            </h2>
+
+            <div class="report-controls">
+                <div class="add-component-form">
+                    <input type="text" id="new-component-input" placeholder="Yeni komponent ekle (örn: 100nF Kapasitör)">
+                    <button id="add-component-btn">Ekle</button>
+                </div>
+
+                <div class="report-actions-row">
+                    <div class="sort-controls">
+                        <button class="sort-btn" data-sort-by="name">İsme Göre (A-Z)</button>
+                        <button class="sort-btn" data-sort-by="type">Türe Göre (Yapay Zeka)</button>
+                        <button class="sort-btn" data-sort-by="stage">Aşamaya Göre (Yapay Zeka)</button>
+                    </div>
+                    <div class="extra-actions">
+                        <button id="undo-delete-btn" style="display:none">Geri Al</button>
+                        <button id="export-csv-btn">Listeyi Dışa Aktar</button>
+                    </div>
+                </div>
+            </div>
+
+            <ul id="component-list"></ul>
+        </div>
+    </div>
+
+    <!-- Detaylar Kılavuzu -->
+    <div id="details-guide-container">
+        <!-- Detay Seçim Ekranı -->
+        <div id="details-selection-container">
+            <div class="selection-card" id="select-project-report">
+                <h2>Proje Raporu</h2>
+                <p>Proje detaylarını ve raporunu oluşturun/görüntüleyin.</p>
+            </div>
+            <div class="selection-card" id="select-personal-info">
+                <h2>Kişisel Bilgiler</h2>
+                <p>Proje sahibi bilgilerini oluşturun/görüntüleyin.</p>
+            </div>
+            <div class="selection-card" id="select-credits">
+                <h2>Emeği Geçenler & Kaynakça</h2>
+                <p>Katkıda bulunanları ve kaynakları yönetin.</p>
+            </div>
+        </div>
+
+        <!-- Proje Raporu Ekranı -->
+        <div id="project-report-container">
+            <div class="details-card">
+                <div class="details-card-header">
+                    <div class="section-title-text">
+                        <h3>Proje Raporu</h3>
+                        <button class="ai-action-btn" id="ai-report-btn" title="Yapay Zeka ile Raporu Geliştir">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="m12 14 4-4"/>
+                                <path d="M16 10h-4V6"/>
+                                <path d="M2 12a10 10 0 1 1 10 10H2v-4a2 2 0 0 1 2-2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="report-content" class="details-content" contenteditable="false"></div>
+                <div class="details-actions">
+                    <button id="undo-report-btn" class="details-btn undo-btn" disabled>Geri Al</button>
+                    <button id="edit-report-btn" class="details-btn">Düzenle</button>
+                    <button id="save-report-btn" class="details-btn save-btn">Kaydet</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kişisel Bilgiler Ekranı -->
+        <div id="personal-info-container">
+            <div class="details-card">
+                <div class="details-card-header">
+                    <div class="section-title-text">
+                        <h3>Kişisel Bilgiler</h3>
+                        <button class="ai-action-btn" id="ai-personal-info-btn" title="Yapay Zeka ile Bilgileri Geliştir">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="m12 14 4-4"/>
+                                <path d="M16 10h-4V6"/>
+                                <path d="M2 12a10 10 0 1 1 10 10H2v-4a2 2 0 0 1 2-2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="personal-info-content" class="details-content" contenteditable="false"></div>
+                <div class="details-actions">
+                    <button id="undo-personal-info-btn" class="details-btn undo-btn" disabled>Geri Al</button>
+                    <button id="edit-personal-info-btn" class="details-btn">Düzenle</button>
+                    <button id="save-personal-info-btn" class="details-btn save-btn">Kaydet</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emeği Geçenler ve Kaynakça Ekranı -->
+        <div id="credits-container">
+            <div class="details-card">
+                <div class="details-card-header">
+                    <h3>Emeği Geçenler ve Kaynakça</h3>
+                </div>
+
+                <h4>Emeği Geçenler</h4>
+                <ul id="credits-list"></ul>
+                <div class="contributor-form">
+                    <input type="text" id="contributor-input" class="ai-hint-input" placeholder="İsim Soyisim, Rol">
+                    <button id="add-contributor-btn" class="details-btn">Ekle (AI ile)</button>
+                </div>
+
+                <h4 style="margin-top:2rem">Kaynakça</h4>
+                <ul id="bibliography-list">
+                    <li>Google. (2024). Gemini [Büyük Dil Modeli]. Bu projede kullanılan metinlerin, açıklamaların ve kodların bir kısmı Gemini yapay zeka modeli tarafından üretilmiş veya düzenlenmiştir.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Modal Overlay -->
+    <div id="ai-modal-overlay"></div>
+
+    <!-- AI Inspector -->
+    <div id="ai-inspector-wrapper">
+        <div class="inspector-container">
+            <h2 class="section-title">
+                <div class="section-title-text">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m12 14 4-4"/>
+                        <path d="M16 10h-4V6"/>
+                        <path d="M2 12a10 10 0 1 1 10 10H2v-4a2 2 0 0 1 2-2z"/>
+                    </svg>
+                    AI Analizci
+                </div>
+                <button id="clear-chat-btn" title="Sohbeti Temizle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                </button>
+            </h2>
+
+            <div id="inspector-content" class="inspector-content">
+                <div id="chat-log"></div>
+                <div class="follow-up-section" id="follow-up-section">
+                    <div class="follow-up-input-group">
+                        <textarea id="follow-up-input" placeholder="Mesajınızı yazın..." rows="1"></textarea>
+                        <button id="follow-up-btn">Gönder</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="text-center p-8 mt-8 border-t border-slate-700">
+    <p class="text-slate-400">&copy; 2025 AEK Projesi. Tüm hakları saklıdır.</p>
+</footer>
+
+<div id="login-modal-overlay">
+    <div id="login-modal">
+        <h2>Yönetici Girişi</h2>
+        <p>Lütfen proje sahibi kimlik bilgilerinizi girin.</p>
+        <div id="login-error-msg"></div>
+        <input type="email" id="login-email" placeholder="Admin ID" required>
+        <input type="password" id="login-password" placeholder="Şifre" required>
+        <button id="login-submit-btn">Giriş Yap</button>
+        <button id="login-close-btn" title="Kapat">&times;</button>
+    </div>
+</div>
+
+<!-- PWA Installation Prompt -->
+<div id="pwa-install-prompt" class="pwa-install-prompt" style="display: none;">
+    <div class="pwa-install-content">
+        <div class="pwa-install-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+            </svg>
+        </div>
+        <div class="pwa-install-text">
+            <h3>Uygulamayı Yükle</h3>
+            <p>AEK Dashboard'u ana ekranınıza ekleyerek daha hızlı erişim sağlayın.</p>
+        </div>
+        <div class="pwa-install-actions">
+            <button id="pwa-install-btn" class="pwa-install-button">Yükle</button>
+            <button id="pwa-install-dismiss" class="pwa-install-dismiss">Daha Sonra</button>
+        </div>
+    </div>
+</div>
+
+<!-- Offline Indicator -->
+<div id="offline-indicator" class="offline-indicator" style="display: none;">
+    <div class="offline-content">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3l6 6 6-6 6 6"></path>
+            <path d="M8 21l4-4 4 4"></path>
+        </svg>
+        <span>Çevrimdışı modda çalışıyorsunuz</span>
+    </div>
+</div>
+
+<!-- Loading Screen -->
+<div id="loading-screen" class="loading-screen">
+    <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <h2>AEK Projesi</h2>
+        <p>Yükleniyor...</p>
+    </div>
+</div>
+
+<button id="admin-login-btn" style="display:flex !important; opacity:1; pointer-events:auto; position:fixed; bottom:1rem; left:1rem; z-index:2147483647;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+    <span>Proje Sahibi Girişi</span>
+</button>
+
+
+
+
+<script type="module">
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Loading screen gizle
+        const loading = document.getElementById('loading-screen');
+        if (loading) loading.classList.add('hidden');
+
+        // Admin butonunu görünür kıl
+        const btn = document.getElementById('admin-login-btn');
+        if (btn) {
+            btn.style.display = 'flex';
+            btn.style.opacity = '0.1'; // pasif görünüm
+            btn.style.pointerEvents = 'auto';
+            btn.style.position = 'fixed';
+            btn.style.bottom = '1rem';
+            btn.style.left = '1rem';
+            btn.style.zIndex = '2147483647';
+            btn.style.transition = 'opacity 0.2s ease';
+        }
+        // Admin giriş butonu eksikse oluştur (merkezî konum: sol alt)
+        if (!document.getElementById('admin-login-btn')) {
+            const adminBtn = document.createElement('button');
+            adminBtn.id = 'admin-login-btn';
+            adminBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                <span>Proje Sahibi Girişi</span>
+            `;
+            document.body.appendChild(adminBtn);
+        }
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: '
+
+</html>
