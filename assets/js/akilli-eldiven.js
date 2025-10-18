@@ -330,6 +330,11 @@ let phaseData = [];
             renderMathInElement(phaseContainer, { delimiters: [ {left: '$', right: '$', display: false} ], throwOnError : false });
         }
 
+        // Global erişim: Firebase callback'leri ve dış dinleyiciler için
+        if (typeof window !== 'undefined') {
+            window.renderPhases = renderPhases;
+        }
+
         phaseContainer.addEventListener('click', (e) => {
             const phaseElement = e.target.closest('.phase');
             if (!phaseElement) return;
@@ -384,6 +389,11 @@ let phaseData = [];
                     phase.style.setProperty('--connector-height', `${Math.max(0, distance)}px`);
                 }
             });
+        }
+
+        // Global erişim: Firebase callback'leri ve dış dinleyiciler için
+        if (typeof window !== 'undefined') {
+            window.calculateConnectorHeights = calculateConnectorHeights;
         }
 
         renderPhases();
