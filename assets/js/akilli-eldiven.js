@@ -1158,7 +1158,8 @@ switch (gelen_karakter) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    document.querySelector('.header-title').addEventListener('click', (event) => {
+    const headerTitlePre = document.querySelector('.header-title');
+    if (headerTitlePre) headerTitlePre.addEventListener('click', (event) => {
         event.preventDefault();
 
         // Şimdi, homeBtn ile tamamen aynı olan işlemleri kopyalıyoruz.
@@ -2206,7 +2207,7 @@ switch (gelen_karakter) {
     // --- YENİ BÖLÜM: KİMLİK DOĞRULAMA YÖNETİMİ ---
 
 // 1. Admin Giriş Butonu Olay Dinleyicisi
-adminLoginBtn.addEventListener('click', () => {
+if (adminLoginBtn) adminLoginBtn.addEventListener('click', () => {
     if (isAdmin) {
         // Eğer admin giriş yapmışsa, bu buton "Çıkış Yap" işlevi görür
         signOut(auth).catch(error => console.error("Çıkış hatası:", error));
@@ -2219,8 +2220,8 @@ adminLoginBtn.addEventListener('click', () => {
 });
 
 // 2. Modal Kapatma Olay Dinleyicileri
-loginCloseBtn.addEventListener('click', () => loginModalOverlay.classList.remove('visible'));
-loginModalOverlay.addEventListener('click', (e) => {
+if (loginCloseBtn) loginCloseBtn.addEventListener('click', () => loginModalOverlay && loginModalOverlay.classList.remove('visible'));
+if (loginModalOverlay) loginModalOverlay.addEventListener('click', (e) => {
     if (e.target === loginModalOverlay) {
         loginModalOverlay.classList.remove('visible');
     }
@@ -2229,7 +2230,7 @@ loginModalOverlay.addEventListener('click', (e) => {
 // 3. Giriş Formu Gönderme Olay Dinleyicisi
 
 
-loginSubmitBtn.addEventListener('click', () => {
+if (loginSubmitBtn) loginSubmitBtn.addEventListener('click', () => {
     const userInput = loginEmailInput.value.trim(); // Kullanıcının girdiği metni al ve boşlukları temizle
     const password = loginPasswordInput.value;
 
@@ -2264,14 +2265,14 @@ loginSubmitBtn.addEventListener('click', () => {
 });
 
 // E-posta ve Şifre alanlarında Enter tuşuna basıldığında girişi tetikle
-loginEmailInput.addEventListener('keydown', (event) => {
+if (loginEmailInput) loginEmailInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         event.preventDefault(); // Varsayılan Enter davranışını engelle
         loginSubmitBtn.click(); // Giriş yap butonunun click olayını tetikle
     }
 });
 
-loginPasswordInput.addEventListener('keydown', (event) => {
+if (loginPasswordInput) loginPasswordInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         event.preventDefault(); // Varsayılan Enter davranışını engelle
         loginSubmitBtn.click(); // Giriş yap butonunun click olayını tetikle
@@ -2314,7 +2315,8 @@ window.history.replaceState({view: 'main'}, '', '#main');
 
 // "AEK Projesi" başlığı (.header-title) için merkezi tıklama yöneticisi.
 // Bu kod, ev butonunun tüm davranışlarını birebir taklit eder.
-document.querySelector('.header-title').addEventListener('click', (e) => {
+const headerTitle = document.querySelector('.header-title');
+if (headerTitle) headerTitle.addEventListener('click', (e) => {
     // 1. Bağlantının varsayılan davranışını (URL'yi değiştirme) her zaman engelle.
     e.preventDefault();
 
