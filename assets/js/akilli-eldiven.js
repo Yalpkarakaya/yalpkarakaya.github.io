@@ -117,7 +117,7 @@
         document.querySelectorAll('.animated-section').forEach(section => animationObserver.observe(section));
 
         // --- YOL HARİTASI (FAZLAR) BÖLÜMÜ ---
-        const phaseData = [
+        let phaseData = [
             {
                 title: 'Faz 1: Donanım ve Pasif Sistem Karakterizasyonu', status: 'completed',
                 details: {
@@ -325,6 +325,10 @@
                 phaseData[phaseElement.dataset.index].status = newStatus;
                 renderPhases();
                 setTimeout(calculateConnectorHeights, 100);
+                // Firebase'e yalnızca adminken yaz
+                if (isAdmin) {
+                    set(ref(database, 'publicContent/roadmapPhases'), phaseData).catch(() => {});
+                }
             }
             if (e.target.closest('.phase-details-tab')) {
                 const tabName = e.target.dataset.tab;
@@ -656,6 +660,16 @@ function toggleAdminMode(isAdminState) {
         // Emeği geçenler yükle
         onValue(ref(database, 'publicContent/credits'), snapshot => {
             creditsList.innerHTML = snapshot.val() || '';
+        });
+
+        // Yol haritası fazları yükle
+        onValue(ref(database, 'publicContent/roadmapPhases'), snapshot => {
+            const data = snapshot.val();
+            if (Array.isArray(data) && data.length) {
+                phaseData = data;
+                renderPhases();
+                setTimeout(calculateConnectorHeights, 100);
+            }
         });
 
         // Komponent listesi yükle
