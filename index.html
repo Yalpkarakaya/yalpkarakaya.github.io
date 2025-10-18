@@ -86,13 +86,6 @@
 
     <section id="overview" class="pt-24 text-center animated-section">
         <h2 class="text-4xl font-bold mb-4">Proje Genel Bakışı</h2>
-        <p class="max-w-3xl mx-auto text-lg mb-12">DJI drone'lar için el hareketleriyle sezgisel, düşük gecikmeli ve yüksek hassasiyetli kontrol sağlayan, giyilebilir yeni nesil bir insan-makine arayüzü.</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left mb-16">
-            <div class="stat-card"> <h3 class="font-bold text-xl mb-2 text-sky-500">Sezgisel Kontrol</h3> <p>Doğal el hareketleri drone kontrolünü basitleştirir.</p> </div>
-            <div class="stat-card"> <h3 class="font-bold text-xl mb-2 text-sky-500">Düşük Gecikme</h3> <p>Hedeflenen <200ms gecikme ile anlık tepki sunar.</p> </div>
-            <div class="stat-card"> <h3 class="font-bold text-xl mb-2 text-sky-500">Teknoloji Füzyonu</h3> <p>Statik ve dinamik hareket algılamayı birleştirir.</p> </div>
-            <div class="stat-card"> <h3 class="font-bold text-xl mb-2 text-sky-500">Yüksek Doğruluk</h3> <p>Hedeflenen jest tanıma doğruluğu >95%.</p> </div>
-        </div>
         <div class="card">
             <h3 class="text-2xl font-bold mb-6 text-center">Temel Algılama Felsefesi: Çoklu-Modalite Füzyonu</h3>
             <p class="max-w-4xl mx-auto text-md mb-8">Sistemin inovasyonunun merkezinde, statik parmak pozisyonlarını ve elin dinamik hareketini yüksek doğrulukla algılayan iki farklı teknolojinin birleşimi yatar.</p>
@@ -105,7 +98,7 @@
 
     <section id="architecture" class="py-24 animated-section">
         <h2 class="text-3xl font-bold mb-4 text-center">Sistem Mimarisi</h2>
-        <p class="max-w-3xl mx-auto text-lg mb-12 text-center">Donanım mimarisi, sinyal kalitesini en üst düzeye çıkarmak ve güç verimliliğini optimize etmek için çok aşamalı bir yaklaşımla tasarlanmıştır.</p>
+        
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
             <div id="arch-details" class="lg:col-span-2 card h-full">
                 <h3 class="font-bold text-lg mb-2 text-sky-500">Bileşen Detayları</h3>
@@ -144,30 +137,16 @@
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center mt-8">
             <div class="lg:col-span-2">
                 <h3 class="text-2xl font-bold mb-4">Q-Faktörü Analizi</h3>
-                <p class="text-slate-400 mb-6">Grafik, mevcut teorik ($Q_{teorik}$), simülasyon ($Q_{sim}$) ve hedeflenen ($Q_{istenen}$) Q-faktörü değerlerini net bir şekilde karşılaştırmaktadır. Bu görselleştirme, projenin mevcut durumu ile hedefleri arasındaki farkı vurgular.</p>
-                <div class="mt-4 text-sm text-slate-500">
-                    <p class="mb-2"><span class="font-semibold text-amber-400">Teorik Q:</span> $Q = \omega L / R_s$</p>
-                    <p><span class="font-semibold text-sky-400">Simülasyon Q:</span> $Q = f_{res} / \Delta f$</p>
-                </div>
             </div>
             <div class="relative w-full h-80 lg:col-span-3">
                 <canvas id="qFactorChart"></canvas>
             </div>
         </div>
-        <div class="insight-card mt-12">
-            <div class="insight-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l.346.666L19.5 15.343V21a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1v-5.657L11.654 3.356A.5.5 0 0 1 12 2.69z"/><path d="M12 18h.01"/></svg>
-            </div>
-            <div>
-                <h4 class="insight-title">Stratejik Analiz ve Sonuç</h4>
-                <p class="insight-text">Hem teorik hesaplamaların hem de simülasyonların ~$25$ civarında bir doğal Q-faktörüne işaret etmesi, Q-Multiplier devresini projenin başarısı için "performans artırıcı" statüsünden <strong>"görev-kritik"</strong> statüsüne yükseltmiştir. Bu analiz, fiziksel prototip üretilmeden önce tasarımın kritik bir parçasını doğrulamaktadır.</p>
-            </div>
-        </div>
+        
     </section>
 
     <section id="roadmap" class="py-24 animated-section">
         <h2 class="text-3xl font-bold mb-4 text-center">Proje Uygulama Yol Haritası</h2>
-        <p class="max-w-3xl mx-auto text-lg mb-12 text-center">Proje 6 mantıksal faza ayrılmıştır. Her fazın durumunu interaktif olarak yönetebilir ve detaylarını inceleyebilirsiniz.</p>
         <div id="phase-container" class="max-w-4xl mx-auto relative">
             <!-- Fazlar JavaScript tarafından buraya eklenecek -->
         </div>
