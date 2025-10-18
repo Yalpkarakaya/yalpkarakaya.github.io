@@ -1,6 +1,3 @@
-    // Global variables for Firebase callbacks
-    let phaseData = [];
-
 
     document.addEventListener('DOMContentLoaded', function () {
         // Loading screen gizle
@@ -146,7 +143,7 @@
         document.querySelectorAll('.animated-section').forEach(section => animationObserver.observe(section));
 
         // --- YOL HARİTASI (FAZLAR) BÖLÜMÜ ---
-        phaseData = [
+        let phaseData = [
             {
                 title: 'Faz 1: Donanım ve Pasif Sistem Karakterizasyonu', status: 'completed',
                 details: {
@@ -674,21 +671,15 @@ function toggleAdminMode(isAdminState) {
     let cachedSorts = { type: null, stage: null };
     let deleteHistory = [];
 
-    // --- FIR        // Yol haritası fazları yükle
-        onValue(ref(database, 'publicContent/roadmapPhases'), snapshot => {
-            const data = snapshot.val();
-            if (Array.isArray(data) && data.length) {
-                phaseData = data;
-                // Fonksiyonlar DOMContentLoaded içinde tanımlı, kontrol et
-                       // Yol haritası fazları yükle (devre dışı - statik data kullanılıyor)
-        // onValue(ref(database, 'publicContent/roadmapPhases'), snapshot => {
-        //     const data = snapshot.val();
-        //     if (Array.isArray(data) && data.length) {
-        //         phaseData = data;
-        //         renderPhases();
-        //         setTimeout(calculateConnectorHeights, 100);
-        //     }
-        // });onalInfo'), snapshot => {
+    // --- FIREBASE FONKSİYONLARI ---
+    function loadDataFromFirebase() {
+        // Proje raporu yükle
+        onValue(ref(database, 'publicContent/projectReport'), snapshot => {
+            reportContent.innerHTML = snapshot.val() || 'Rapor içeriği henüz oluşturulmadı...';
+        });
+
+        // Kişisel bilgiler yükle
+        onValue(ref(database, 'publicContent/personalInfo'), snapshot => {
             personalInfoContent.innerHTML = snapshot.val() || 'Kişisel bilgiler henüz girilmedi...';
         });
 
@@ -698,15 +689,15 @@ function toggleAdminMode(isAdminState) {
         });
 
         // Yol haritası fazları yükle
-//         onValue(ref(database, 'publicContent/roadmapPhases'), snapshot => {
-//             const data = snapshot.val();
-//             if (Array.isArray(data) && data.length) {
-//                 phaseData = data;
-//                 renderPhases();
-//                 setTimeout(calculateConnectorHeights, 100);
-//             }
-//         });
-// 
+        onValue(ref(database, 'publicContent/roadmapPhases'), snapshot => {
+            const data = snapshot.val();
+            if (Array.isArray(data) && data.length) {
+                phaseData = data;
+                renderPhases();
+                setTimeout(calculateConnectorHeights, 100);
+            }
+        });
+
         // Komponent listesi yükle
         onValue(ref(database, 'publicContent/components'), snapshot => {
             const data = snapshot.val();
