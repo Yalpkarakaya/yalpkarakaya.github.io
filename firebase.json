@@ -1,4 +1,9 @@
 {
+  "hosting": {
+    "rewrites": [
+      { "source": "/geminiProxy", "function": "geminiProxy" }
+    ]
+  },
   "functions": [
     {
       "source": "functions",

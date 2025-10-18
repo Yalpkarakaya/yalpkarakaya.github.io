@@ -386,24 +386,8 @@
     const ADMIN_EMAILS = ["yalp@admin.com", "ezgi@admin.com", "kectny@admin.com"];
 
     // --- API ANAHTARLARI VE YARDIMCI FONKSİYONLAR ---
-    const apiKeysEncoded = [
-        'QUl6YVN5QUdRX281LXA0bTFPRWFXWVJId2pRWjMwb09wS1JyQXc4',
-        'QUl6YVN5Qm1YOWhUMUhRNGlEOHU4ZnVlSG95TEZFdUJrSTVnWS1j',
-        'QUl6YVN5RGpaMk1ock1WNXdzWG8tRmgtRnI3VjNzTy1SMkFBd0FN',
-
-        'QUl6YVN5RE1JMWtGYVpPRDE1TmRhdldDQm0yT19vQkZOQ1dBUzVj',
-        'QUl6YVN5RGNfYVMybjk3eUFPWFJGeEJaLVc1b0xNOVFSNWQzeWNv',
-        'QUl6YVN5RHphTlFlU1ljUk1qZmlOYnhGa3AzU1Q3bFRxVEJMWEg4',
-    ];
-
-    let currentApiIndex = 0;
-
-    function getNextApiKeyAndDecode() {
-        const encodedKey = apiKeysEncoded[currentApiIndex];
-        currentApiIndex = (currentApiIndex + 1) % apiKeysEncoded.length;
-        return atob(encodedKey); // atob() fonksiyonu Base64 kodunu çözer
-    }
-
+    // API anahtarları frontendden KALDIRILDI. Tüm çağrılar güvenli proxy üzerinden yapılır.
+    const proxyEndpoint = '/geminiProxy'; // Firebase Functions rewrites ile eşleştirilebilir
     const proApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent`;
     const flashApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`;
 
@@ -1314,7 +1298,8 @@ switch (gelen_karakter) {
 
         try {
             const result = await addToApiQueue(() => callGemini([{role: 'user', parts: [{text: input}]}], {parts: [{text: systemPrompt}]}, flashApiUrl));
-            const updatedCredits = creditsList.innerHTML + result;
+            const safeHtml = sanitizeHtml(result);
+            const updatedCredits = creditsList.innerHTML + safeHtml;
             await set(ref(database, 'publicContent/credits'), updatedCredits);
             creditsList.innerHTML = updatedCredits;
             contributorInput.value = '';
@@ -1918,54 +1903,90 @@ switch (gelen_karakter) {
         }, 3000);
     }
 
-    // --- GEMINI API ÇAĞRISI FONKSİYONU ---
-    async function callGemini(history, systemInstruction, modelUrl) {
-        let lastError = null;
+    // Basit kaçış ve sanitize yardımcıları
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
 
-        for (let attempt = 0; attempt < apiKeysEncoded.length; attempt++) {
-            try {
-                const apiKey = getNextApiKeyAndDecode();
-                const payload = {
-                    contents: history,
-                    systemInstruction
-                };
-                const finalUrl = `${modelUrl}?key=${apiKey}`;
+    function sanitizeHtml(unsafeHtml) {
+        const allowedTags = new Set(['P','B','I','STRONG','EM','UL','OL','LI','H1','H2','H3','H4','H5','H6','DIV','SPAN','BR','A']);
+        const allowedAttrs = { 'A': ['href','title','target','rel'] };
+        const parserContainer = document.createElement('div');
+        parserContainer.innerHTML = unsafeHtml || '';
 
-                const response = await fetch(finalUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    const errorBody = await response.json();
-                    const errorMessage = errorBody?.error?.message || 'Bilinmeyen bir API hatası oluştu.';
-
-                    if (errorMessage.includes('quota') || errorMessage.includes('limit') || response.status === 429) {
-                        console.log(`API ${attempt + 1} limit aşıldı, diğer API'ye geçiliyor...`);
-                        lastError = new Error(`API limit aşıldı: ${errorMessage}`);
-                        continue;
+        function clean(node) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                return document.createTextNode(node.nodeValue);
+            }
+            if (node.nodeType !== Node.ELEMENT_NODE) {
+                return document.createTextNode('');
+            }
+            const tag = node.tagName;
+            if (!allowedTags.has(tag)) {
+                // Etiketi kaldır, sadece metnini bırak
+                const span = document.createElement('span');
+                span.textContent = node.textContent;
+                return span;
+            }
+            const clone = document.createElement(tag.toLowerCase());
+            // Öznitelikler
+            if (allowedAttrs[tag]) {
+                for (const attr of allowedAttrs[tag]) {
+                    const val = node.getAttribute(attr);
+                    if (val) {
+                        if (tag === 'A' && attr === 'href') {
+                            const v = String(val).trim();
+                            if (/^(https?:|mailto:|#)/i.test(v) && !/^javascript:/i.test(v)) {
+                                clone.setAttribute('href', v);
+                                // Güvenlik için
+                                clone.setAttribute('rel', 'noopener noreferrer');
+                            }
+                        } else {
+                            clone.setAttribute(attr, val);
+                        }
                     }
-                    throw new Error(`API Hatası: ${errorMessage}`);
-                }
-
-                const data = await response.json();
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (text) {
-                    return text;
-                } else {
-                    throw new Error("Yapay zekadan bir yanıt alınamadı.");
-                }
-            } catch (error) {
-                lastError = error;
-                if (attempt === apiKeys.length - 1) {
-                    break;
                 }
             }
+            // Etkinlik/tehlikeli öznitelikleri kaldır
+            for (const { name } of Array.from(node.attributes || [])) {
+                if (/^on/i.test(name) || name === 'style') continue;
+            }
+            // Çocukları temizle
+            for (const child of Array.from(node.childNodes)) {
+                clone.appendChild(clean(child));
+            }
+            return clone;
         }
 
-        throw lastError || new Error("Tüm API anahtarları kullanılamaz durumda.");
+        const out = document.createElement('div');
+        for (const child of Array.from(parserContainer.childNodes)) {
+            out.appendChild(clean(child));
+        }
+        return out.innerHTML;
+    }
+
+    // --- GEMINI API ÇAĞRISI FONKSİYONU ---
+    async function callGemini(history, systemInstruction, modelUrl) {
+        const payload = { contents: history, systemInstruction, targetUrl: modelUrl };
+        const response = await fetch(proxyEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+            const errorBody = await response.json().catch(() => ({}));
+            const msg = errorBody?.error?.message || `Proxy Hatası: ${response.status}`;
+            throw new Error(msg);
+        }
+        const data = await response.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!text) throw new Error('Yapay zekadan geçerli yanıt alınamadı.');
+        return text;
     }
 
     // --- AI CHAT FONKSİYONLARI ---
@@ -1973,7 +1994,11 @@ switch (gelen_karakter) {
         const messageDiv = document.createElement('div');
         const className = type === 'error' ? 'error-message' : `${type}-message`;
         messageDiv.className = `chat-message ${className}`;
-        messageDiv.innerHTML = message;
+        if (type === 'loader') {
+            messageDiv.innerHTML = message; // yalnızca loader için HTML'e izin ver
+        } else {
+            messageDiv.textContent = String(message);
+        }
         chatLog.appendChild(messageDiv);
         chatLog.scrollTop = chatLog.scrollHeight;
         return messageDiv;
@@ -2000,7 +2025,13 @@ switch (gelen_karakter) {
             const result = await addToApiQueue(() => callGemini(conversationHistory, systemInstruction, flashApiUrl));
 
             loaderMessage.remove();
-            addMessageToChat(result, 'ai');
+            // Güvenli render: yalnızca metin içerik olarak ekle
+            const safeText = document.createTextNode(result);
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-message ai-message';
+            msgDiv.appendChild(safeText);
+            chatLog.appendChild(msgDiv);
+            chatLog.scrollTop = chatLog.scrollHeight;
             conversationHistory.push({ role: 'model', parts: [{ text: result }] });
         } catch (error) {
             loaderMessage.remove();
@@ -2046,8 +2077,8 @@ switch (gelen_karakter) {
             conversationHistory.push({ role: 'user', parts: [{text: question}] });
 
             try {
-                const result = await addToApiQueue(() => callGemini(conversationHistory, {parts: [{text: systemPrompt}]}, flashApiUrl));
-                addMessageToChat(result, 'ai');
+            const result = await addToApiQueue(() => callGemini(conversationHistory, {parts: [{text: systemPrompt}]}, flashApiUrl));
+            addMessageToChat(result, 'ai');
                 conversationHistory.push({ role: 'model', parts: [{text: result}] });
             } catch(error) {
                 addMessageToChat(`Yanıt alınamadı: ${error.message}`, 'error');
@@ -2061,7 +2092,8 @@ switch (gelen_karakter) {
             isErrorState = false;
             const result = await addToApiQueue(() => callGemini([{role: 'user', parts: [{text: userPrompt}]}], {parts: [{text: systemPrompt}]}, proApiUrl));
 
-            targetElement.innerHTML = result;
+            // Sadece güvenli HTML'i bas
+            targetElement.innerHTML = sanitizeHtml(result);
             historyArray.push(result);
             undoButton.disabled = false;
             addMessageToChat('İçerik güncellendi. Pencereyi kapatıp kontrol edebilirsiniz.', 'ai');
