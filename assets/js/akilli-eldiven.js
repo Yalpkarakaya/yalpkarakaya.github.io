@@ -1,5 +1,8 @@
 
     document.addEventListener('DOMContentLoaded', function () {
+        // Loading screen gizle
+        const loading = document.getElementById('loading-screen');
+        if (loading) loading.classList.add('hidden');
         // Admin giriş butonu eksikse oluştur (merkezî konum: sol alt)
         if (!document.getElementById('admin-login-btn')) {
             const adminBtn = document.createElement('button');
