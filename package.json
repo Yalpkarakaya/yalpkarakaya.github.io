@@ -1,0 +1,12 @@
+{
+  "name": "yalpkarakaya-github-io-site",
+  "private": true,
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "tailwindcss": "^3.4.12"
+  },
+  "scripts": {
+    "build:css": "tailwindcss -c tailwind.config.js -i assets/css/tailwind.css -o assets/css/tailwind.generated.css --minify"
+  }
+}
