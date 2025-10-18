@@ -1,3 +1,6 @@
+    // Global variables for Firebase callbacks
+    let phaseData = [];
+
 
     document.addEventListener('DOMContentLoaded', function () {
         // Loading screen gizle
@@ -143,7 +146,7 @@
         document.querySelectorAll('.animated-section').forEach(section => animationObserver.observe(section));
 
         // --- YOL HARİTASI (FAZLAR) BÖLÜMÜ ---
-        let phaseData = [
+        phaseData = [
             {
                 title: 'Faz 1: Donanım ve Pasif Sistem Karakterizasyonu', status: 'completed',
                 details: {
