@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 
 function readSafe(file) {
   try { return fs.readFileSync(file, 'utf8'); } catch { return ''; }
@@ -18,7 +19,7 @@ function removeAll(html, pattern) {
   return html.replace(re, '');
 }
 
-(function main() {
+(async function main() {
   const root = process.cwd();
   const outDir = path.join(root, 'AEK APK');
   fs.mkdirSync(outDir, { recursive: true });
@@ -33,8 +34,49 @@ function removeAll(html, pattern) {
   const siteCss = readSafe(path.join(root, 'assets/css/akilli-eldiven.css'));
   html = inlineCss(html, '(/)?assets/css/akilli\-eldiven\.css', siteCss);
 
-  // Remove any Tailwind CDN script if present
-  html = removeAll(html, `<script[^>]*src=\"https://cdn\.tailwindcss\.com\"[^>]*>\s*<\/script>`);
+  // Inline remote stylesheets
+  const remoteCssMarkers = [];
+  html = html.replace(/<link[^>]+rel=["']stylesheet["'][^>]*href=["'](https?:[^"']+)["'][^>]*>/gi, (m, href) => {
+    const marker = `<!-- inlined-css:${href} -->`;
+    remoteCssMarkers.push({ href, marker });
+    return marker;
+  });
+  for (const { href, marker } of remoteCssMarkers) {
+    const css = await new Promise(resolve => {
+      https.get(href, res => {
+        if (res.statusCode !== 200) return resolve('');
+        let data = '';
+        res.setEncoding('utf8');
+        res.on('data', c => (data += c));
+        res.on('end', () => resolve(data));
+      }).on('error', () => resolve(''));
+    });
+    if (css) {
+      html = html.replace(marker, `\n<style>\n${css}\n</style>\n`);
+    }
+  }
+
+  // Inline remote scripts
+  const remoteJsMarkers = [];
+  html = html.replace(/<script[^>]+src=["'](https?:[^"']+)["'][^>]*>\s*<\/script>/gi, (m, src) => {
+    const marker = `<!-- inlined-js:${src} -->`;
+    remoteJsMarkers.push({ src, marker });
+    return marker;
+  });
+  for (const { src, marker } of remoteJsMarkers) {
+    const js = await new Promise(resolve => {
+      https.get(src, res => {
+        if (res.statusCode !== 200) return resolve('');
+        let data = '';
+        res.setEncoding('utf8');
+        res.on('data', c => (data += c));
+        res.on('end', () => resolve(data));
+      }).on('error', () => resolve(''));
+    });
+    if (js) {
+      html = html.replace(marker, `\n<script>\n${js}\n</script>\n`);
+    }
+  }
 
   // Remove all existing app module script tags and re-inject inline at end of body
   html = removeAll(html, `<script[^>]*type=\"module\"[^>]*src=\"(/)?assets/js/akilli\-eldiven\.js\"[^>]*>\s*<\/script>`);
