@@ -2413,7 +2413,16 @@
             document.body.appendChild(adminBtn);
         }
         renderMathInElement(document.body, {
-            delimiters: [
-                {left: '
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$",  right: "$",  display: false },
+            { left: "\\(", right: "\\)", display: false },
+            { left: "\\[", right: "\\]", display: true }
+          ]
+        });
 
+// DOMContentLoaded kapanışı
+});
+</script>
+</body>
 </html>
