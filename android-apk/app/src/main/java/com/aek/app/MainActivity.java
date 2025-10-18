@@ -1,7 +1,9 @@
 package com.aek.app;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -16,7 +18,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
-
     private WebView webView;
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -33,11 +34,15 @@ public class MainActivity extends AppCompatActivity {
         ws.setAllowContentAccess(true);
         ws.setLoadWithOverviewMode(true);
         ws.setUseWideViewPort(true);
+        ws.setSupportZoom(false);
+        ws.setBuiltInZoomControls(false);
+        webView.setBackgroundColor(Color.BLACK);
 
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient());
 
         String html = readAsset("index.html");
+        // Base URL set to assets path for relative URLs
         webView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
     }
 
@@ -52,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             }
             return sb.toString();
         } catch (IOException e) {
-            return "<html><body><h1>Load error</h1></body></html>";
+            return "<html><body style='background:#000;color:#fff'><h2>Yükleme hatası</h2><p>index.html okunamadı.</p></body></html>";
         }
     }
 }
