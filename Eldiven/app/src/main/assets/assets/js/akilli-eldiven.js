@@ -396,9 +396,10 @@ let phaseData = [];
     
     
     // Firebase kütüphanelerinden gerekli fonksiyonları içe aktar
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+    // Offline-friendly: use local bundled Firebase modules
+    import { initializeApp } from "../firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "../firebase-database.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "../firebase-auth.js";
 
     // --- FIREBASE KURULUMU ---
     const firebaseConfig = {
