@@ -17,5 +17,6 @@ class AEKApp : Application() {
                 .build()
             FirebaseApp.initializeApp(this, options)
         }
+        enableOffline()
     }
 }
