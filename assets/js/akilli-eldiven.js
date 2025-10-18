@@ -3,6 +3,18 @@
         // Loading screen gizle
         const loading = document.getElementById('loading-screen');
         if (loading) loading.classList.add('hidden');
+
+        // Admin butonunu görünür kıl
+        const btn = document.getElementById('admin-login-btn');
+        if (btn) {
+            btn.style.display = 'flex';
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+            btn.style.position = 'fixed';
+            btn.style.bottom = '1rem';
+            btn.style.left = '1rem';
+            btn.style.zIndex = '2147483647';
+        }
         // Admin giriş butonu eksikse oluştur (merkezî konum: sol alt)
         if (!document.getElementById('admin-login-btn')) {
             const adminBtn = document.createElement('button');
