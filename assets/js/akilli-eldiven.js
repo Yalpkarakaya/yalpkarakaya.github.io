@@ -8,12 +8,13 @@
         const btn = document.getElementById('admin-login-btn');
         if (btn) {
             btn.style.display = 'flex';
-            btn.style.opacity = '1';
+            btn.style.opacity = '0.1'; // pasif görünüm
             btn.style.pointerEvents = 'auto';
             btn.style.position = 'fixed';
             btn.style.bottom = '1rem';
             btn.style.left = '1rem';
             btn.style.zIndex = '2147483647';
+            btn.style.transition = 'opacity 0.2s ease';
         }
         // Admin giriş butonu eksikse oluştur (merkezî konum: sol alt)
         if (!document.getElementById('admin-login-btn')) {
@@ -2246,12 +2247,25 @@ switch (gelen_karakter) {
     // --- YENİ BÖLÜM: KİMLİK DOĞRULAMA YÖNETİMİ ---
 
 // 1. Admin Giriş Butonu Olay Dinleyicisi
+// Admin butonu iki aşamalı: ilk tık aktive eder (opaklaştırır), ikinci tık eylem gerçekleştirir
+let adminButtonArmed = false;
+let adminButtonTimer = null;
 if (adminLoginBtn) adminLoginBtn.addEventListener('click', () => {
+    if (!adminButtonArmed) {
+        // İlk tık: 3 saniyelik aktif pencere
+        adminButtonArmed = true;
+        adminLoginBtn.style.opacity = '1';
+        clearTimeout(adminButtonTimer);
+        adminButtonTimer = setTimeout(() => {
+            adminButtonArmed = false;
+            adminLoginBtn.style.opacity = '0.1';
+        }, 3000);
+        return;
+    }
+    // Silahlanmış durumda: gerçek eylem
     if (isAdmin) {
-        // Eğer admin giriş yapmışsa, bu buton "Çıkış Yap" işlevi görür
         signOut(auth).catch(error => console.error("Çıkış hatası:", error));
     } else {
-        // Eğer giriş yapılmamışsa, giriş modal'ını gösterir
         loginErrorMsg.textContent = '';
         loginModalOverlay.classList.add('visible');
         loginEmailInput.focus();
