@@ -1,0 +1,9 @@
+{
+  "name": "AEK Dashboard",
+  "short_name": "AEK",
+  "start_url": "site.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0ea5e9",
+  "icons": []
+}
