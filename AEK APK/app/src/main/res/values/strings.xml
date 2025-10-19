@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">AEK Projesi</string>
-    <string name="login">Giriş Yap</string>
-    <string name="logout">Çıkış</string>
-    <string name="error_no_internet">İnternet bağlantısı yok</string>
-    <string name="offline_mode">Çevrimdışı mod</string>
-</resources>
